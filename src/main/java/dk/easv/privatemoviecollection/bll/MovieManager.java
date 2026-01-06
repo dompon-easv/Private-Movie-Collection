@@ -1,13 +1,14 @@
 package dk.easv.privatemoviecollection.bll;
 
 import dk.easv.privatemoviecollection.dal.dao.MovieDao;
+import dk.easv.privatemoviecollection.dal.daoInterface.IMovieDao;
 import dk.easv.privatemoviecollection.model.Movie;
 
 import java.sql.SQLException;
 
 public class MovieManager {
 
-    private MovieDao movieDao;
+    private IMovieDao movieDao;
 
     public MovieManager(MovieDao movieDao) {
         this.movieDao = movieDao;
