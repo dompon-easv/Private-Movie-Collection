@@ -1,6 +1,7 @@
 package dk.easv.privatemoviecollection.gui;
 
 import dk.easv.privatemoviecollection.HelloApplication;
+import dk.easv.privatemoviecollection.bll.CategoryManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,11 +20,16 @@ public class MainScreenController {
     @FXML
     private TextField txtFilter;
 
+    private CategoryManager categoryManager;
+
     public void onClickNewCategory(ActionEvent event) throws IOException {
         Stage stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/dk/easv/privatemoviecollection/gui/AddCategory.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("Movie Collection");
+        
+        AddCategoryController controller = fxmlLoader.getController();
+        controller.setCategoryManager(this.categoryManager);
+        stage.setTitle("Add Category");
         stage.setScene(scene);
         stage.show();
     }
@@ -35,7 +41,7 @@ public class MainScreenController {
         Stage stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/dk/easv/privatemoviecollection/gui/AddMovie.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("Movie Collection");
+        stage.setTitle("Add Movie");
         stage.setScene(scene);
         stage.show();
     }
@@ -44,5 +50,10 @@ public class MainScreenController {
     }
 
     public void onClickEditMovie(ActionEvent event) {
+    }
+
+    public void setCategoryManager(CategoryManager categoryManager) {
+        this.categoryManager = categoryManager;
+
     }
 }
