@@ -41,7 +41,6 @@ public class AddCategoryController {
 
             try {
                 Category newCategory = categoryManager.addCategory(category);
-                txtNewCategory.clear();
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 stage.close();
 

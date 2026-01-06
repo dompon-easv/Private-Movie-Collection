@@ -1,6 +1,25 @@
 package dk.easv.privatemoviecollection.bll;
 
+import dk.easv.privatemoviecollection.dal.MovieDao;
+import dk.easv.privatemoviecollection.model.Category;
+import dk.easv.privatemoviecollection.model.Movie;
+
+import java.sql.SQLException;
+
 public class MovieManager {
+
+    private MovieDao movieDao;
+
+    public MovieManager(MovieDao movieDao) {
+        this.movieDao = movieDao;
+    }
+
+    public Movie addMovie(String title, double imdbRating, double myRating, String filePath) throws SQLException {
+        Movie movie = new Movie(title, imdbRating, myRating, filePath);
+
+        movieDao.addMovie(movie);
+        return movie;
+    }
     // opening the movie by the default app
     // preventing adding another movie with the same path?
     // checking if format is correct - only mp4
