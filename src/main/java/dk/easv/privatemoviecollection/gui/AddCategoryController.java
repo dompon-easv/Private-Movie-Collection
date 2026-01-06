@@ -16,5 +16,6 @@ public class AddCategoryController {
     }
 
     public void onClickAddCategory(ActionEvent event) {
+        String category = txtNewCategory.getText();
     }
 }
