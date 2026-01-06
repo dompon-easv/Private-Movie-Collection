@@ -13,4 +13,11 @@ public class Category {
     { this.category = category;
         this.id = id; }
 
+    public String getName() {
+        return category;
+    }
+
+    public void setName(String name) {
+        this.category = name;
+    }
 }
