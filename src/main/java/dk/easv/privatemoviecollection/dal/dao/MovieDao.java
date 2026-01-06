@@ -1,20 +1,21 @@
-package dk.easv.privatemoviecollection.dal;
+package dk.easv.privatemoviecollection.dal.dao;
 
-import dk.easv.privatemoviecollection.model.Category;
+import dk.easv.privatemoviecollection.dal.ConnectionManager;
+import dk.easv.privatemoviecollection.dal.daoInterface.IMovieDao;
 import dk.easv.privatemoviecollection.model.Movie;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class MovieDao {
+public class MovieDao implements IMovieDao {
     private ConnectionManager db;
     private Connection connection;
 
     public MovieDao(ConnectionManager db) throws SQLException {
         this.db = db;
     }
-
+    @Override
     public void addMovie(Movie movie) throws SQLException {
         String sql = "INSERT INTO movie (title, imdbrating, myrating, filelink) VALUES (?, ?, ?, ?)";
 
