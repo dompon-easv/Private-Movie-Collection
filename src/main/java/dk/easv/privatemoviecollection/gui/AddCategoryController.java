@@ -1,7 +1,6 @@
 package dk.easv.privatemoviecollection.gui;
 
 import dk.easv.privatemoviecollection.bll.CategoryManager;
-import dk.easv.privatemoviecollection.dal.CategoryDao;
 import dk.easv.privatemoviecollection.model.Category;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

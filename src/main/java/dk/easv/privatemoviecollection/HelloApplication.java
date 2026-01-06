@@ -2,9 +2,10 @@ package dk.easv.privatemoviecollection;
 
 import dk.easv.privatemoviecollection.bll.CategoryManager;
 import dk.easv.privatemoviecollection.bll.MovieManager;
-import dk.easv.privatemoviecollection.dal.CategoryDao;
+import dk.easv.privatemoviecollection.dal.dao.CategoryDao;
 import dk.easv.privatemoviecollection.dal.ConnectionManager;
-import dk.easv.privatemoviecollection.dal.MovieDao;
+import dk.easv.privatemoviecollection.dal.dao.MovieDao;
+import dk.easv.privatemoviecollection.dal.daoInterface.ICategoryDao;
 import dk.easv.privatemoviecollection.gui.MainScreenController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

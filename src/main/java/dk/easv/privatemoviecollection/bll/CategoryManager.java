@@ -1,15 +1,15 @@
 package dk.easv.privatemoviecollection.bll;
 
-import dk.easv.privatemoviecollection.dal.CategoryDao;
+import dk.easv.privatemoviecollection.dal.daoInterface.ICategoryDao;
 import dk.easv.privatemoviecollection.model.Category;
 
 import java.sql.SQLException;
 
 public class CategoryManager {
 
-    private CategoryDao categoryDao;
+    private ICategoryDao categoryDao;
 
-    public CategoryManager(CategoryDao categoryDao) {
+    public CategoryManager(ICategoryDao categoryDao) {
         this.categoryDao = categoryDao;
     }
 
