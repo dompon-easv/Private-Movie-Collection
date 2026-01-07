@@ -30,7 +30,7 @@ public class MovieManager {
     }
 
     public void deleteMovie(int id) throws SQLException {
-        MovieDao.deleteMovie(id);
+        movieDao.deleteMovie(id);
     }
     // opening the movie by the default app
     public void openMovieInApp(String filePath) throws IOException {

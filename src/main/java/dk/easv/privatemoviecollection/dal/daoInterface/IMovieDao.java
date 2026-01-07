@@ -8,4 +8,5 @@ import java.sql.SQLException;
 public interface IMovieDao {
     void addMovie(Movie movie) throws SQLException;
     ObservableList<Movie> getAllMovies() throws SQLException;
+    void deleteMovie(int id) throws SQLException;
 }
