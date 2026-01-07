@@ -3,6 +3,8 @@ package dk.easv.privatemoviecollection.dal.dao;
 import dk.easv.privatemoviecollection.dal.ConnectionManager;
 import dk.easv.privatemoviecollection.dal.daoInterface.ICategoryDao;
 import dk.easv.privatemoviecollection.model.Category;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -31,8 +33,8 @@ public class CategoryDao implements ICategoryDao {
         }
     }
 
-    public List<Category> getAllCategories() throws SQLException {
-        List<Category> categories = new ArrayList<>();
+    public ObservableList<Category> getAllCategories() throws SQLException {
+        ObservableList<Category> categories = FXCollections.observableArrayList();
         String sql = "SELECT name FROM category";
 
         try (Connection con = db.getConnection();
