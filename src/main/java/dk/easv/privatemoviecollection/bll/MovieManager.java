@@ -2,15 +2,17 @@ package dk.easv.privatemoviecollection.bll;
 
 import dk.easv.privatemoviecollection.dal.dao.MovieDao;
 import dk.easv.privatemoviecollection.dal.daoInterface.IMovieDao;
-import dk.easv.privatemoviecollection.model.Category;
 import dk.easv.privatemoviecollection.model.Movie;
+import javafx.collections.ObservableList;
 
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
 
 public class MovieManager {
 
-    private IMovieDao movieDao;
+    private static IMovieDao movieDao;
 
     public MovieManager(MovieDao movieDao) {
         this.movieDao = movieDao;
@@ -22,7 +24,19 @@ public class MovieManager {
         movieDao.addMovie(movie);
         return movie;
     }
+
+    public static ObservableList<Movie> getMovies() throws SQLException {
+        return movieDao.getAllMovies();
+    }
+
     // opening the movie by the default app
+    public void openMovieInApp(String filePath) throws IOException {
+        File file = new File(filePath);
+
+        if (file.exists()) {
+            Desktop.getDesktop().open(file);
+        }
+    }
     // preventing adding another movie with the same path?
     // checking if format is correct - only mp4
     // creating instances of movies

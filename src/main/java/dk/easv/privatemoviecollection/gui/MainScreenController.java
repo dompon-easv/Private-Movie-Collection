@@ -4,7 +4,9 @@ import dk.easv.privatemoviecollection.HelloApplication;
 import dk.easv.privatemoviecollection.bll.CategoryManager;
 import dk.easv.privatemoviecollection.bll.MovieManager;
 import dk.easv.privatemoviecollection.model.Category;
+import dk.easv.privatemoviecollection.model.Movie;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -37,20 +39,22 @@ public class MainScreenController implements Initializable {
     private TextField txtFilter;
     @FXML
     private TableColumn<Category, String> colCategory;
+    @FXML
+    private TableColumn<Movie, String> colTitle;
+    @FXML
+    private TableColumn<Movie, String> colImdbRating;
+    @FXML
+    private TableColumn<Movie, String> colMyRating;
 
     private CategoryManager categoryManager;
     private MovieManager movieManager;
-
-    /*public void initialize() throws SQLException {
-        colCategory.setCellValueFactory( new PropertyValueFactory<>("name"));
-    }*/
 
 
     public void init(CategoryManager categoryManager, MovieManager movieManager) throws SQLException {
         this.categoryManager = categoryManager;
         this.movieManager = movieManager;
                 loadCategories();
-
+                loadMovies();
     }
 
 
@@ -94,11 +98,32 @@ public class MainScreenController implements Initializable {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        categoryManager.getCategories().forEach(c -> System.out.println(c.getName()));
+    }
+
+    public void loadMovies() throws SQLException {
+        tblMovies.getItems().clear();
+        try{
+            tblMovies.getItems().setAll(MovieManager.getMovies());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         colCategory.setCellValueFactory( c -> new SimpleStringProperty(c.getValue().getName()));
+        colTitle.setCellValueFactory(m -> new SimpleStringProperty(m.getValue().getTitle()));
+        colImdbRating.setCellValueFactory(m -> {
+            return new SimpleStringProperty(String.valueOf(m.getValue().getImdbRating()));
+        });
+        colMyRating.setCellValueFactory(m -> {
+            return new SimpleStringProperty(String.valueOf(m.getValue().getMyRating()));
+        });
+    }
+
+
+    public void onClickOpenInApp(ActionEvent actionEvent) throws IOException {
+        Movie selectedMovie = (Movie) tblMovies.getSelectionModel().getSelectedItem();
+        movieManager.openMovieInApp(selectedMovie.getFileLink());
     }
 }

@@ -3,9 +3,12 @@ package dk.easv.privatemoviecollection.dal.dao;
 import dk.easv.privatemoviecollection.dal.ConnectionManager;
 import dk.easv.privatemoviecollection.dal.daoInterface.IMovieDao;
 import dk.easv.privatemoviecollection.model.Movie;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class MovieDao implements IMovieDao {
@@ -29,6 +32,20 @@ public class MovieDao implements IMovieDao {
             stmt.executeUpdate();
         }
 
+    }
+
+    public ObservableList<Movie> getAllMovies() throws SQLException {
+        ObservableList<Movie> movies = FXCollections.observableArrayList();
+        String sql = "SELECT * FROM movie";
+
+        try (Connection con = db.getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery())
+        {
+            while (rs.next()) {
+                movies.add(new Movie(rs.getString("title"), rs.getDouble("imdbRating"), rs.getDouble("myRating"), rs.getString("fileLink")));
+            }
+        } return movies;
     }
 
     // adding movies to db
