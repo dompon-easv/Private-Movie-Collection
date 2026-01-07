@@ -22,6 +22,10 @@ public class MovieManager {
         movieDao.addMovie(movie);
         return movie;
     }
+
+    public void deleteMovie(int id) throws SQLException {
+        MovieDao.deleteMovie(id);
+    }
     // opening the movie by the default app
     // preventing adding another movie with the same path?
     // checking if format is correct - only mp4
