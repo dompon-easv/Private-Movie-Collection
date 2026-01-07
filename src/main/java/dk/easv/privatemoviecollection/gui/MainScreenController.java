@@ -66,7 +66,12 @@ public class MainScreenController implements Initializable {
         stage.show();
     }
 
-    public void onClickDeleteCategory(ActionEvent event) {
+    public void onClickDeleteCategory(ActionEvent event) throws SQLException {
+        if(getSelectedCategory() != null) {
+            categoryManager.deleteCategory(getSelectedCategory().getId());
+            loadCategories();
+        }
+        else return;
     }
 
     public void onClickAddMovie(ActionEvent event) throws IOException, SQLException {
@@ -94,6 +99,10 @@ public class MainScreenController implements Initializable {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Category getSelectedCategory() throws SQLException {
+        return tblCategories.getSelectionModel().getSelectedItem();
     }
 
     @Override
