@@ -34,7 +34,7 @@ public class MainScreenController implements Initializable {
     @FXML
     private TableView<Category> tblCategories;
     @FXML
-    private TableView tblMovies;
+    private TableView<Movie> tblMovies;
     @FXML
     private TextField txtFilter;
     @FXML
@@ -90,10 +90,10 @@ public class MainScreenController implements Initializable {
         stage.show();
     }
 
-    public void onClickDeleteMovie(ActionEvent event) {
+    public void onClickDeleteMovie(ActionEvent event) throws SQLException {
         if(getSelectedMovie() != null) {
             movieManager.deleteMovie(getSelectedMovie().getId());
-           // loadMovies();
+           loadMovies();
         }
         else return;
     }
@@ -113,11 +113,13 @@ public class MainScreenController implements Initializable {
 
     public void loadMovies() throws SQLException {
         tblMovies.getItems().clear();
-        try{
+        try {
             tblMovies.getItems().setAll(MovieManager.getMovies());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
     public Category getSelectedCategory() throws SQLException {
         return tblCategories.getSelectionModel().getSelectedItem();
     }
