@@ -5,10 +5,17 @@ import dk.easv.privatemoviecollection.bll.CategoryManager;
 import dk.easv.privatemoviecollection.bll.MovieManager;
 import dk.easv.privatemoviecollection.model.Category;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -16,9 +23,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.ResourceBundle;
 
-public class MainScreenController {
+public class MainScreenController implements Initializable {
     @FXML
     private TableView<Category> tblCategories;
     @FXML
@@ -31,21 +41,16 @@ public class MainScreenController {
     private CategoryManager categoryManager;
     private MovieManager movieManager;
 
-    public void initialize() {
-    colCategory.setCellValueFactory( new PropertyValueFactory<>("category"));
-        }
+    /*public void initialize() throws SQLException {
+        colCategory.setCellValueFactory( new PropertyValueFactory<>("name"));
+    }*/
 
 
     public void init(CategoryManager categoryManager, MovieManager movieManager) throws SQLException {
         this.categoryManager = categoryManager;
         this.movieManager = movieManager;
-        Platform.runLater(() -> {
-            try {
                 loadCategories();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        });
+
     }
 
 
@@ -90,6 +95,10 @@ public class MainScreenController {
             throw new RuntimeException(e);
         }
         categoryManager.getCategories().forEach(c -> System.out.println(c.getName()));
+    }
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        colCategory.setCellValueFactory( c -> new SimpleStringProperty(c.getValue().getName()));
     }
 }

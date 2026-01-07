@@ -25,7 +25,7 @@ public class CategoryManager {
         return category;
     }
 
-    public List<Category> getCategories() throws SQLException {
+    public ObservableList<Category> getCategories() throws SQLException {
     return categoryDao.getAllCategories();
     }
 
