@@ -46,6 +46,14 @@ public class MovieDao implements IMovieDao {
                 movies.add(new Movie(rs.getString("title"), rs.getDouble("imdbRating"), rs.getDouble("myRating"), rs.getString("fileLink")));
             }
         } return movies;
+    public static void deleteMovie(int id) {
+        String sql = "DELETE FROM movie WHERE id = ?";
+        try  (Connection con = ConnectionManager.getConnection();
+              PreparedStatement stmt = con.prepareStatement(sql))
+        { stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch(SQLException e) {
+        }
     }
 
     // adding movies to db

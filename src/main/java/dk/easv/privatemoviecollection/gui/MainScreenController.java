@@ -70,23 +70,34 @@ public class MainScreenController implements Initializable {
         stage.show();
     }
 
-    public void onClickDeleteCategory(ActionEvent event) {
+    public void onClickDeleteCategory(ActionEvent event) throws SQLException {
+        if(getSelectedCategory() != null) {
+            categoryManager.deleteCategory(getSelectedCategory().getId());
+            loadCategories();
+        }
+        else return;
     }
 
-    public void onClickAddMovie(ActionEvent event) throws IOException {
+    public void onClickAddMovie(ActionEvent event) throws IOException, SQLException {
         Stage stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/dk/easv/privatemoviecollection/gui/AddMovie.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
 
         AddMovieController controller = fxmlLoader.getController();
-        controller.setMovieManager(this.movieManager);
+        controller.init(categoryManager, movieManager);
         stage.setTitle("Add Movie");
         stage.setScene(scene);
         stage.show();
     }
 
     public void onClickDeleteMovie(ActionEvent event) {
+        if(getSelectedMovie() != null) {
+            movieManager.deleteMovie(getSelectedMovie().getId());
+           // loadMovies();
+        }
+        else return;
     }
+
 
     public void onClickEditMovie(ActionEvent event) {
     }
@@ -107,6 +118,13 @@ public class MainScreenController implements Initializable {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    public Category getSelectedCategory() throws SQLException {
+        return tblCategories.getSelectionModel().getSelectedItem();
+    }
+
+    public Movie getSelectedMovie()
+    {
+        return tblMovies.getSelectionModel().getSelectedItem();
     }
 
     @Override

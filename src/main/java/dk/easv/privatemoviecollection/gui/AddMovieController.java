@@ -2,19 +2,20 @@ package dk.easv.privatemoviecollection.gui;
 
 import dk.easv.privatemoviecollection.bll.CategoryManager;
 import dk.easv.privatemoviecollection.bll.MovieManager;
+import dk.easv.privatemoviecollection.model.Category;
 import dk.easv.privatemoviecollection.model.Movie;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.net.URL;
 import java.sql.SQLException;
+import java.util.ResourceBundle;
 
 public class AddMovieController {
 
@@ -25,17 +26,22 @@ public class AddMovieController {
     @FXML
     private TextField txtMyRating;
     @FXML
-    private ListView lstAllCategories;
+    private ListView<Category> lstAllCategories;
     @FXML
     private ListView lstChosenCategories;
     @FXML
     private Label lblFilePath;
 
     private MovieManager movieManager;
+    private CategoryManager categoryManager;
 
-    public void setMovieManager(MovieManager movieManager) {
-        this.movieManager =  movieManager;
+    public void init(CategoryManager categoryManager, MovieManager movieManager) throws SQLException {
+        this.categoryManager = categoryManager;
+        this.movieManager = movieManager;
+        loadCategories();
+
     }
+
 
     public void onClickCancel(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -68,6 +74,15 @@ public class AddMovieController {
         File selectedFile = fc.showOpenDialog(stage);
         if (selectedFile != null) {
             lblFilePath.setText(selectedFile.getAbsolutePath());
+        }
+    }
+
+    public void loadCategories() throws SQLException {
+        lstAllCategories.getItems().clear();
+        try{
+            lstAllCategories.getItems().setAll(categoryManager.getCategories());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }

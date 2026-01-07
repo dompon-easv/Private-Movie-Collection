@@ -35,16 +35,26 @@ public class CategoryDao implements ICategoryDao {
 
     public ObservableList<Category> getAllCategories() throws SQLException {
         ObservableList<Category> categories = FXCollections.observableArrayList();
-        String sql = "SELECT name FROM category";
+        String sql = "SELECT id, name FROM category";
 
         try (Connection con = db.getConnection();
         PreparedStatement stmt = con.prepareStatement(sql);
         ResultSet rs = stmt.executeQuery())
         {
             while (rs.next()) {
-                categories.add(new Category(rs.getString("name")));
+                categories.add(new Category(rs.getString("name"), rs.getInt("id")));
             }
         } return  categories;
+    }
+
+    public void deleteCategory(int id) {
+        String sql = "DELETE FROM category WHERE id = ?";
+        try  (Connection con = ConnectionManager.getConnection();
+              PreparedStatement stmt = con.prepareStatement(sql))
+        { stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch(SQLException e) {
+        }
     }
 
     //adding do db

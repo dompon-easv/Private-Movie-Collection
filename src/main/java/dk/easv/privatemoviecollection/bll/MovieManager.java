@@ -29,6 +29,9 @@ public class MovieManager {
         return movieDao.getAllMovies();
     }
 
+    public void deleteMovie(int id) throws SQLException {
+        MovieDao.deleteMovie(id);
+    }
     // opening the movie by the default app
     public void openMovieInApp(String filePath) throws IOException {
         File file = new File(filePath);
