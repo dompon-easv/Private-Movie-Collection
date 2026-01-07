@@ -69,13 +69,13 @@ public class MainScreenController implements Initializable {
     public void onClickDeleteCategory(ActionEvent event) {
     }
 
-    public void onClickAddMovie(ActionEvent event) throws IOException {
+    public void onClickAddMovie(ActionEvent event) throws IOException, SQLException {
         Stage stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/dk/easv/privatemoviecollection/gui/AddMovie.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
 
         AddMovieController controller = fxmlLoader.getController();
-        controller.setMovieManager(this.movieManager);
+        controller.init(categoryManager, movieManager);
         stage.setTitle("Add Movie");
         stage.setScene(scene);
         stage.show();
@@ -94,7 +94,6 @@ public class MainScreenController implements Initializable {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        categoryManager.getCategories().forEach(c -> System.out.println(c.getName()));
     }
 
     @Override
