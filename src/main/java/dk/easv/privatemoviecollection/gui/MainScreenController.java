@@ -4,6 +4,7 @@ import dk.easv.privatemoviecollection.HelloApplication;
 import dk.easv.privatemoviecollection.bll.CategoryManager;
 import dk.easv.privatemoviecollection.bll.MovieManager;
 import dk.easv.privatemoviecollection.model.Category;
+import dk.easv.privatemoviecollection.model.Movie;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -40,10 +41,6 @@ public class MainScreenController implements Initializable {
 
     private CategoryManager categoryManager;
     private MovieManager movieManager;
-
-    /*public void initialize() throws SQLException {
-        colCategory.setCellValueFactory( new PropertyValueFactory<>("name"));
-    }*/
 
 
     public void init(CategoryManager categoryManager, MovieManager movieManager) throws SQLException {
@@ -87,7 +84,13 @@ public class MainScreenController implements Initializable {
     }
 
     public void onClickDeleteMovie(ActionEvent event) {
+        if(getSelectedMovie() != null) {
+            movieManager.deleteMovie(getSelectedMovie().getId());
+           // loadMovies();
+        }
+        else return;
     }
+
 
     public void onClickEditMovie(ActionEvent event) {
     }
@@ -103,6 +106,11 @@ public class MainScreenController implements Initializable {
 
     public Category getSelectedCategory() throws SQLException {
         return tblCategories.getSelectionModel().getSelectedItem();
+    }
+
+    public Movie getSelectedMovie()
+    {
+        return tblMovies.getSelectionModel().getSelectedItem();
     }
 
     @Override

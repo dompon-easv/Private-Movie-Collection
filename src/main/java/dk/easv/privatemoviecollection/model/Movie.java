@@ -37,4 +37,8 @@ public class Movie {
     public void setMyRating(double myRating) { this.myRating = myRating; }
 
     public String getFileLink() { return fileLink; }
+
+    public int getId() {
+        return id;
+    }
 }
