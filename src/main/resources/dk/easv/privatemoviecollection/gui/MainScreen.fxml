@@ -10,7 +10,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane prefHeight="500.0" prefWidth="783.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.easv.privatemoviecollection.gui.MainScreenController">
    <children>
       <VBox prefHeight="26.0" prefWidth="783.0" />
@@ -24,7 +23,7 @@
                            <children>
                               <TableView fx:id="tblCategories" layoutX="14.0" layoutY="36.0" prefHeight="421.0" prefWidth="276.0">
                                 <columns>
-                                  <TableColumn prefWidth="275.0" text="Movie genres" />
+                                  <TableColumn fx:id="colCategory" prefWidth="275.0" text="Movie genres" />
                                 </columns>
                               </TableView>
                               <Label layoutX="14.0" layoutY="2.0" text="Categories">
