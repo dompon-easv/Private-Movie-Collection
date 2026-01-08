@@ -36,11 +36,6 @@ public class MovieManager {
         movieDao.deleteMovie(movie);
     }
 
-
-    public static ObservableList<Movie> getMovies() throws SQLException {
-        return movieDao.getAllMovies();
-    }
-
     public void deleteMovie(int id) throws SQLException {
         movieDao.deleteMovie(id);
     }
