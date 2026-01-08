@@ -1,6 +1,7 @@
 package dk.easv.privatemoviecollection.model;
 
-public class Movie {
+public class
+Movie {
     private int id;
     private String title;
     private double imdbRating;
@@ -37,4 +38,10 @@ public class Movie {
     public void setMyRating(double myRating) { this.myRating = myRating; }
 
     public String getFileLink() { return fileLink; }
+
+    public int getId() { return id; }
+
+    public void setId(int id) {this.id = id;}
+
+    public void setFileLink(String fileLink) {this.fileLink = fileLink;}
 }

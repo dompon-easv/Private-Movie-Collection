@@ -5,6 +5,7 @@ import dk.easv.privatemoviecollection.dal.daoInterface.IMovieDao;
 import dk.easv.privatemoviecollection.model.Movie;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class MovieManager {
 
@@ -19,7 +20,18 @@ public class MovieManager {
 
         movieDao.addMovie(movie);
         return movie;
+
     }
+    public List<Movie> getAllMovies() throws SQLException {
+        return movieDao.getAllMovies();
+    }
+    public void editMovie(Movie movie) throws SQLException {
+        movieDao.editMovie(movie);
+    }
+    public void deleteMovie(Movie movie) throws SQLException {
+        movieDao.deleteMovie(movie);
+    }
+
     // opening the movie by the default app
     // preventing adding another movie with the same path?
     // checking if format is correct - only mp4
