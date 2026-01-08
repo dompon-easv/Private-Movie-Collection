@@ -1,6 +1,7 @@
 package dk.easv.privatemoviecollection.dal.daoInterface;
 
 import dk.easv.privatemoviecollection.model.Movie;
+import javafx.collections.ObservableList;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -14,4 +15,6 @@ public interface IMovieDao {
     void editMovie(Movie movie) throws SQLException;
 
     void deleteMovie(Movie movie) throws SQLException;
+    ObservableList<Movie> getAllMovies() throws SQLException;
+    void deleteMovie(int id) throws SQLException;
 }

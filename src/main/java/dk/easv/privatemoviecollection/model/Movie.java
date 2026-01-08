@@ -44,4 +44,7 @@ Movie {
     public void setId(int id) {this.id = id;}
 
     public void setFileLink(String fileLink) {this.fileLink = fileLink;}
+    public int getId() {
+        return id;
+    }
 }
