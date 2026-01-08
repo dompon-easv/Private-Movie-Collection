@@ -114,7 +114,7 @@ public class MainScreenController implements Initializable {
     public void loadMovies() throws SQLException {
         tblMovies.getItems().clear();
         try {
-            tblMovies.getItems().setAll(MovieManager.getMovies());
+            tblMovies.getItems().setAll(movieManager.getAllMovies());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
