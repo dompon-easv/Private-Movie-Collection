@@ -48,7 +48,7 @@ public class MovieDao implements IMovieDao {
 
             while (rs.next()) {
                 Movie movie = new Movie(
-                        rs.getInt("id"),           // 🔑 critical
+                        rs.getInt("id"),
                         rs.getString("title"),
                         rs.getDouble("imdbrating"),
                         rs.getDouble("myrating"),
