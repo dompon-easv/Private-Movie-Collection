@@ -6,6 +6,8 @@ import dk.easv.privatemoviecollection.model.Category;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -25,10 +27,13 @@ public class CategoryManager {
         return category;
     }
 
-    public List<Category> getCategories() throws SQLException {
+    public ObservableList<Category> getCategories() throws SQLException {
     return categoryDao.getAllCategories();
     }
 
+   public void deleteCategory(int id) throws SQLException {
+        categoryDao.deleteCategory(id);
+   }
     // adding category instance
     //deleting
     //getting

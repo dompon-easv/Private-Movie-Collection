@@ -4,11 +4,20 @@ import dk.easv.privatemoviecollection.HelloApplication;
 import dk.easv.privatemoviecollection.bll.CategoryManager;
 import dk.easv.privatemoviecollection.bll.MovieManager;
 import dk.easv.privatemoviecollection.model.Category;
+import dk.easv.privatemoviecollection.model.Movie;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -16,36 +25,36 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.ResourceBundle;
 
-public class MainScreenController {
+public class MainScreenController implements Initializable {
     @FXML
     private TableView<Category> tblCategories;
     @FXML
-    private TableView tblMovies;
+    private TableView<Movie> tblMovies;
     @FXML
     private TextField txtFilter;
     @FXML
     private TableColumn<Category, String> colCategory;
+    @FXML
+    private TableColumn<Movie, String> colTitle;
+    @FXML
+    private TableColumn<Movie, String> colImdbRating;
+    @FXML
+    private TableColumn<Movie, String> colMyRating;
 
     private CategoryManager categoryManager;
     private MovieManager movieManager;
-
-    public void initialize() {
-    colCategory.setCellValueFactory( new PropertyValueFactory<>("category"));
-        }
 
 
     public void init(CategoryManager categoryManager, MovieManager movieManager) throws SQLException {
         this.categoryManager = categoryManager;
         this.movieManager = movieManager;
-        Platform.runLater(() -> {
-            try {
                 loadCategories();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        });
+                loadMovies();
     }
 
 
@@ -61,23 +70,34 @@ public class MainScreenController {
         stage.show();
     }
 
-    public void onClickDeleteCategory(ActionEvent event) {
+    public void onClickDeleteCategory(ActionEvent event) throws SQLException {
+        if(getSelectedCategory() != null) {
+            categoryManager.deleteCategory(getSelectedCategory().getId());
+            loadCategories();
+        }
+        else return;
     }
 
-    public void onClickAddMovie(ActionEvent event) throws IOException {
+    public void onClickAddMovie(ActionEvent event) throws IOException, SQLException {
         Stage stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/dk/easv/privatemoviecollection/gui/AddMovie.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
 
         AddMovieController controller = fxmlLoader.getController();
-        controller.setMovieManager(this.movieManager);
+        controller.init(categoryManager, movieManager);
         stage.setTitle("Add Movie");
         stage.setScene(scene);
         stage.show();
     }
 
-    public void onClickDeleteMovie(ActionEvent event) {
+    public void onClickDeleteMovie(ActionEvent event) throws SQLException {
+        if(getSelectedMovie() != null) {
+            movieManager.deleteMovie(getSelectedMovie().getId());
+           loadMovies();
+        }
+        else return;
     }
+
 
     public void onClickEditMovie(ActionEvent event) {
     }
@@ -89,7 +109,41 @@ public class MainScreenController {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        categoryManager.getCategories().forEach(c -> System.out.println(c.getName()));
+    }
 
+    public void loadMovies() throws SQLException {
+        tblMovies.getItems().clear();
+        try {
+            tblMovies.getItems().setAll(MovieManager.getMovies());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Category getSelectedCategory() throws SQLException {
+        return tblCategories.getSelectionModel().getSelectedItem();
+    }
+
+    public Movie getSelectedMovie()
+    {
+        return tblMovies.getSelectionModel().getSelectedItem();
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        colCategory.setCellValueFactory( c -> new SimpleStringProperty(c.getValue().getName()));
+        colTitle.setCellValueFactory(m -> new SimpleStringProperty(m.getValue().getTitle()));
+        colImdbRating.setCellValueFactory(m -> {
+            return new SimpleStringProperty(String.valueOf(m.getValue().getImdbRating()));
+        });
+        colMyRating.setCellValueFactory(m -> {
+            return new SimpleStringProperty(String.valueOf(m.getValue().getMyRating()));
+        });
+    }
+
+
+    public void onClickOpenInApp(ActionEvent actionEvent) throws IOException {
+        Movie selectedMovie = (Movie) tblMovies.getSelectionModel().getSelectedItem();
+        movieManager.openMovieInApp(selectedMovie.getFileLink());
     }
 }
