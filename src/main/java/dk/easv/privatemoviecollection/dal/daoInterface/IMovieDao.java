@@ -15,6 +15,5 @@ public interface IMovieDao {
     void editMovie(Movie movie) throws SQLException;
 
     void deleteMovie(Movie movie) throws SQLException;
-    ObservableList<Movie> getAllMovies() throws SQLException;
     void deleteMovie(int id) throws SQLException;
 }
