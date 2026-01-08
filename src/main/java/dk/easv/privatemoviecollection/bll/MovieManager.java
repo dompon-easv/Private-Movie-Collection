@@ -9,6 +9,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 public class MovieManager {
 
@@ -23,7 +24,18 @@ public class MovieManager {
 
         movieDao.addMovie(movie);
         return movie;
+
     }
+    public List<Movie> getAllMovies() throws SQLException {
+        return movieDao.getAllMovies();
+    }
+    public void editMovie(Movie movie) throws SQLException {
+        movieDao.editMovie(movie);
+    }
+    public void deleteMovie(Movie movie) throws SQLException {
+        movieDao.deleteMovie(movie);
+    }
+
 
     public static ObservableList<Movie> getMovies() throws SQLException {
         return movieDao.getAllMovies();

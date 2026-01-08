@@ -10,6 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MovieDao implements IMovieDao {
     private ConnectionManager db;
@@ -23,16 +25,71 @@ public class MovieDao implements IMovieDao {
         String sql = "INSERT INTO movie (title, imdbrating, myrating, filelink) VALUES (?, ?, ?, ?)";
 
         try (Connection con = db.getConnection();
-             PreparedStatement stmt = con.prepareStatement(sql))
-        {
+             PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setString(1, movie.getTitle());
             stmt.setDouble(2, movie.getImdbRating());
             stmt.setDouble(3, movie.getMyRating());
             stmt.setString(4, movie.getFileLink());
             stmt.executeUpdate();
+
+            try (var keys = stmt.getGeneratedKeys()) {
+                if (keys.next()) {
+                    movie.setId(keys.getInt(1)); }
+            }
+        }
+    }
+    @Override
+    public List<Movie> getAllMovies() throws SQLException { List<Movie> movies = new ArrayList<>(); String sql = """
+        SELECT id, title, imdbrating, myrating, filelink
+        FROM movie """;
+        try (Connection con = db.getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Movie movie = new Movie(
+                        rs.getInt("id"),           // 🔑 critical
+                        rs.getString("title"),
+                        rs.getDouble("imdbrating"),
+                        rs.getDouble("myrating"),
+                        rs.getString("filelink") ); movies.add(movie);}
+        }
+            return movies;
+    }
+
+
+
+    @Override
+            public void editMovie(Movie movie) throws SQLException {String sql = """
+        UPDATE movie SET title = ?, imdbrating = ?, myrating = ?, filelink = ?
+        WHERE id = ? """;
+
+            try (Connection con = db.getConnection();
+                 PreparedStatement stmt = con.prepareStatement(sql)) {
+
+                stmt.setString(1, movie.getTitle());
+                stmt.setDouble(2, movie.getImdbRating());
+                stmt.setDouble(3, movie.getMyRating());
+                stmt.setString(4, movie.getFileLink());
+                stmt.setInt(5, movie.getId());
+
+                stmt.executeUpdate();
+            }
         }
 
+    @Override
+    public void deleteMovie(Movie movie) throws SQLException {
+        String sql = "DELETE FROM movie WHERE id = ?";
+
+        try (Connection con = db.getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setInt(1, movie.getId());
+            stmt.executeUpdate();
+        }
     }
+
+
 
     public ObservableList<Movie> getAllMovies() throws SQLException {
         ObservableList<Movie> movies = FXCollections.observableArrayList();
