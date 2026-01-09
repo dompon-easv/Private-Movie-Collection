@@ -5,6 +5,8 @@ import dk.easv.privatemoviecollection.bll.MovieManager;
 import dk.easv.privatemoviecollection.model.Category;
 import dk.easv.privatemoviecollection.model.Movie;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -15,6 +17,8 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
@@ -26,6 +30,9 @@ public class AddMovieController {
     @FXML private ListView<Category> lstAllCategories;
     @FXML private ListView lstChosenCategories;
     @FXML private Label lblFilePath;
+
+    private ObservableList<Movie> movieList = FXCollections.observableArrayList();
+    public void setMovieList(ObservableList<Movie> movieList) {this.movieList = movieList;}
 
     private MovieManager movieManager;
     private CategoryManager categoryManager;
@@ -68,7 +75,22 @@ public class AddMovieController {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         File selectedFile = fc.showOpenDialog(stage);
         if (selectedFile != null) {
-            lblFilePath.setText(selectedFile.getAbsolutePath());
+            try {
+                // Destination folder for project
+                String baseFolder = "src/main/resources/Movies/";
+                File targetFolder = new File(baseFolder);
+                if (!targetFolder.exists()) targetFolder.mkdirs(); // create a folder if is missing
+
+                //copy file into resources folder
+                File destFile = new File(targetFolder, selectedFile.getName());
+                Files.copy(selectedFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                String relativePath = baseFolder + selectedFile.getName();
+                lblFilePath.setText(relativePath);
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 
