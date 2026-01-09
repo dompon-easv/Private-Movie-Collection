@@ -77,7 +77,7 @@ public class AddMovieController {
         if (selectedFile != null) {
             try {
                 // Destination folder for project
-                String baseFolder = "src/main/resources/Movies/ ";
+                String baseFolder = "src/main/resources/Movies/";
                 File targetFolder = new File(baseFolder);
                 if (!targetFolder.exists()) targetFolder.mkdirs(); // create a folder if is missing
 
