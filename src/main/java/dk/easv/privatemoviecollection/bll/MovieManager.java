@@ -29,12 +29,6 @@ public class MovieManager {
     public List<Movie> getAllMovies() throws SQLException {
         return movieDao.getAllMovies();
     }
-    public void editMovie(Movie movie) throws SQLException {
-        movieDao.editMovie(movie);
-    }
-    public void deleteMovie(Movie movie) throws SQLException {
-        movieDao.deleteMovie(movie);
-    }
 
     public void deleteMovie(int id) throws SQLException {
         movieDao.deleteMovie(id);

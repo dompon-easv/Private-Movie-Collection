@@ -7,6 +7,7 @@ import dk.easv.privatemoviecollection.model.Movie;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
@@ -19,18 +20,12 @@ import java.util.ResourceBundle;
 
 public class AddMovieController {
 
-    @FXML
-    private TextField txtTitle;
-    @FXML
-    private TextField txtIMDBRating;
-    @FXML
-    private TextField txtMyRating;
-    @FXML
-    private ListView<Category> lstAllCategories;
-    @FXML
-    private ListView lstChosenCategories;
-    @FXML
-    private Label lblFilePath;
+    @FXML private TextField txtTitle;
+    @FXML private TextField txtIMDBRating;
+    @FXML private TextField txtMyRating;
+    @FXML private ListView<Category> lstAllCategories;
+    @FXML private ListView lstChosenCategories;
+    @FXML private Label lblFilePath;
 
     private MovieManager movieManager;
     private CategoryManager categoryManager;

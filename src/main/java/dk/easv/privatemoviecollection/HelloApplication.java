@@ -29,6 +29,8 @@ public class HelloApplication extends Application {
 
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/dk/easv/privatemoviecollection/gui/MainScreen.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
+        stage.setResizable(false);
+
 
         MainScreenController controller = fxmlLoader.getController();
         controller.init(categoryManager, movieManager);

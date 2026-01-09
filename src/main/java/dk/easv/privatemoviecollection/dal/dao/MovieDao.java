@@ -12,7 +12,6 @@ import java.util.List;
 
 public class MovieDao implements IMovieDao {
     private ConnectionManager db;
-    private Connection connection;
 
     public MovieDao(ConnectionManager db) throws SQLException {
         this.db = db;
@@ -73,18 +72,6 @@ public class MovieDao implements IMovieDao {
                 stmt.executeUpdate();
             }
         }
-
-    @Override
-    public void deleteMovie(Movie movie) throws SQLException {
-        String sql = "DELETE FROM movie WHERE id = ?";
-
-        try (Connection con = db.getConnection();
-             PreparedStatement stmt = con.prepareStatement(sql)) {
-
-            stmt.setInt(1, movie.getId());
-            stmt.executeUpdate();
-        }
-    }
 
     public void deleteMovie(int id) {
         String sql = "DELETE FROM movie WHERE id = ?";
