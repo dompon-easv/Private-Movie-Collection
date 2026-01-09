@@ -62,6 +62,7 @@ public class MainScreenController implements Initializable {
         Stage stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/dk/easv/privatemoviecollection/gui/AddCategory.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
+        stage.setResizable(false);
         
         AddCategoryController controller = fxmlLoader.getController();
         controller.setCategoryManager(this.categoryManager);
@@ -82,6 +83,7 @@ public class MainScreenController implements Initializable {
         Stage stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/dk/easv/privatemoviecollection/gui/AddMovie.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
+        stage.setResizable(false);
 
         AddMovieController controller = fxmlLoader.getController();
         controller.init(categoryManager, movieManager);
