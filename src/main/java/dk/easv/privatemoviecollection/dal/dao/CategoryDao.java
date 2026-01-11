@@ -3,6 +3,7 @@ package dk.easv.privatemoviecollection.dal.dao;
 import dk.easv.privatemoviecollection.dal.ConnectionManager;
 import dk.easv.privatemoviecollection.dal.daoInterface.ICategoryDao;
 import dk.easv.privatemoviecollection.model.Category;
+import dk.easv.privatemoviecollection.model.Movie;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -30,7 +31,7 @@ public class CategoryDao implements ICategoryDao {
         }
     }
 
-    public ObservableList<Category> getAllCategories() throws SQLException {
+    public List<Category> getAllCategories() throws SQLException {
         ObservableList<Category> categories = FXCollections.observableArrayList();
         String sql = "SELECT id, name FROM category";
 
@@ -50,8 +51,47 @@ public class CategoryDao implements ICategoryDao {
               PreparedStatement stmt = con.prepareStatement(sql))
         { stmt.setInt(1, id);
             stmt.executeUpdate();
-        } catch(SQLException e) {
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to delete category", e);
         }
+    }
+
+    public void addMovieToCategory(int movieId, int categoryId) throws SQLException {
+        String sql = "INSERT INTO CatMovie (MovieId, CategoryId) VALUES (?, ?)";
+        try(Connection con = db.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql)){
+            stmt.setInt(1, movieId);
+            stmt.setInt(2, categoryId);
+            stmt.executeUpdate();
+        }
+    }
+
+    public List<Movie> getAllMoviesForCategory(int categoryId) throws SQLException {
+        List<Movie> movies = new ArrayList<>();
+        String sqlPrompt = """
+            SELECT m.id, m.title, m.imdbrating, m.myrating, m.filelink
+            FROM Movie m
+            INNER JOIN CatMovie cm ON m.id = cm.MovieId
+            WHERE cm.CategoryId = ?
+            ORDER BY m.title
+            """;
+
+        try (Connection con = ConnectionManager.getConnection();
+             PreparedStatement ps = con.prepareStatement(sqlPrompt)){
+            ps.setInt(1, categoryId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                movies.add(new Movie(
+                        rs.getInt("id"),
+                        rs.getString("title"),
+                        rs.getDouble("imdbrating"),
+                        rs.getDouble("myrating"),
+                        rs.getString("filelink")
+                ));
+            }
+        }
+        return movies;
     }
 
     //adding do db

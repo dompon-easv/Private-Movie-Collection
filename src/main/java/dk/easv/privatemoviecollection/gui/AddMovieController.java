@@ -22,7 +22,7 @@ import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-public class AddMovieController {
+public class AddMovieController implements Initializable {
 
     @FXML private TextField txtTitle;
     @FXML private TextField txtIMDBRating;
@@ -60,13 +60,19 @@ public class AddMovieController {
             Alert.AlertType alertType = Alert.AlertType.ERROR;
             Alert alert = new Alert(alertType);
             alert.setTitle("Error");
+            alert.showAndWait();
+            return;
         }
-        else{
 
-            Movie newMovie = movieManager.addMovie(title, imdbRating,myRating,filePath);
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.close();
+        Movie newMovie = movieManager.addMovie(title, imdbRating,myRating,filePath);
+        ObservableList<Category> selectedCategories = lstAllCategories.getSelectionModel().getSelectedItems();
+        if(selectedCategories != null && !selectedCategories.isEmpty()) {
+            for (Category category : selectedCategories) {
+                categoryManager.addMovieToCategory(newMovie.getId(), category.getId());
+            }
         }
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.close();
     }
 
     public void onClickBrowse(ActionEvent event) {
@@ -94,12 +100,17 @@ public class AddMovieController {
         }
     }
 
-    public void loadCategories() throws SQLException {
+    public void loadCategories() {
         lstAllCategories.getItems().clear();
         try{
             lstAllCategories.getItems().setAll(categoryManager.getCategories());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        lstAllCategories.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 }
