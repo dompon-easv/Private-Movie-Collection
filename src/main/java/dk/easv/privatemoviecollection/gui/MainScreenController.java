@@ -17,13 +17,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
+import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -50,7 +50,7 @@ public class MainScreenController implements Initializable {
     private MovieManager movieManager;
 
 
-    public void init(CategoryManager categoryManager, MovieManager movieManager) throws SQLException {
+    public void init(CategoryManager categoryManager, MovieManager movieManager) {
         this.categoryManager = categoryManager;
         this.movieManager = movieManager;
                 loadCategories();
@@ -65,7 +65,7 @@ public class MainScreenController implements Initializable {
         stage.setResizable(false);
         
         AddCategoryController controller = fxmlLoader.getController();
-        controller.setCategoryManager(this.categoryManager);
+        controller.init(categoryManager);
         stage.setTitle("Add Category");
         stage.setScene(scene);
         stage.show();
@@ -104,8 +104,8 @@ public class MainScreenController implements Initializable {
     public void onClickEditMovie(ActionEvent event) {
     }
 
-    public void loadCategories() throws SQLException {
-        tblCategories.getItems().clear();
+    public void loadCategories() {
+        //tblCategories.getItems().clear();
         try{
             tblCategories.getItems().setAll(categoryManager.getCategories());
         } catch (SQLException e) {
@@ -113,8 +113,8 @@ public class MainScreenController implements Initializable {
         }
     }
 
-    public void loadMovies() throws SQLException {
-        tblMovies.getItems().clear();
+    public void loadMovies() {
+        //tblMovies.getItems().clear();
         try {
             tblMovies.getItems().setAll(movieManager.getAllMovies());
         } catch (SQLException e) {
@@ -122,7 +122,7 @@ public class MainScreenController implements Initializable {
         }
     }
 
-    public Category getSelectedCategory() throws SQLException {
+    public Category getSelectedCategory() {
         return tblCategories.getSelectionModel().getSelectedItem();
     }
 
@@ -134,6 +134,7 @@ public class MainScreenController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         colCategory.setCellValueFactory( c -> new SimpleStringProperty(c.getValue().getName()));
+
         colTitle.setCellValueFactory(m -> new SimpleStringProperty(m.getValue().getTitle()));
         colImdbRating.setCellValueFactory(m -> {
             return new SimpleStringProperty(String.valueOf(m.getValue().getImdbRating()));
@@ -141,11 +142,46 @@ public class MainScreenController implements Initializable {
         colMyRating.setCellValueFactory(m -> {
             return new SimpleStringProperty(String.valueOf(m.getValue().getMyRating()));
         });
+
+        //added so that movies are display once a category is clicked
+        tblCategories.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue != null) {
+                loadMoviesForCategory(newValue.getId());
+            }
+        });
     }
 
 
-    public void onClickOpenInApp(ActionEvent actionEvent) throws IOException {
-        Movie selectedMovie = (Movie) tblMovies.getSelectionModel().getSelectedItem();
-        movieManager.openMovieInApp(selectedMovie.getFileLink());
+    public void onClickOpenInApp(ActionEvent actionEvent) {
+        Movie selectedMovie = tblMovies.getSelectionModel().getSelectedItem();
+
+        if(selectedMovie == null || !movieManager.canOpenMovie(selectedMovie.getFileLink())){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Cannot open movie");
+            alert.setContentText(selectedMovie == null ?
+                    "Please select a movie to open" :
+                    "File does not exist: " + selectedMovie.getFileLink());
+            alert.showAndWait();
+            return;
+        }
+
+        try {
+            Desktop.getDesktop().open(new File(selectedMovie.getFileLink()));
+        } catch (IOException e){
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not open the movie:\n" + e.getMessage());
+            alert.showAndWait();
+            e.printStackTrace();
+        }
+    }
+
+    private void loadMoviesForCategory(int categoryId) {
+        try {
+            tblMovies.setItems(FXCollections.observableArrayList(categoryManager.getAllMoviesForCategory(categoryId)));
+            }
+        catch (SQLException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR,"Could not load movies for category");
+            alert.showAndWait();
+            e.printStackTrace();
+        }
     }
 }
