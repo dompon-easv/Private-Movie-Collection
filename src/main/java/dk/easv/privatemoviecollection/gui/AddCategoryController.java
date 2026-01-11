@@ -17,12 +17,10 @@ public class AddCategoryController {
 
     private CategoryManager categoryManager;
 
-    public AddCategoryController() {
-    }
-
-    public void setCategoryManager(CategoryManager categoryManager) {
+    public void init(CategoryManager categoryManager) {
         this.categoryManager = categoryManager;
     }
+
     @FXML
     public void onClickCancel(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -30,7 +28,7 @@ public class AddCategoryController {
     }
 
     @FXML
-    public void onClickAddCategory(ActionEvent event) throws SQLException {
+    public void onClickAddCategory(ActionEvent event) {
         String category = txtNewCategory.getText();
         if (category.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
