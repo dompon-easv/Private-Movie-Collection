@@ -39,9 +39,6 @@ public class HelloApplication extends Application {
         stage.setTitle("Movie Collection");
         stage.setScene(scene);
 
-        MainScreenController controller = fxmlLoader.getController();
-        controller.init(categoryManager, movieManager);
-
         stage.setOnShown(event -> {
             try {
                 controller.runStartupChecks();
