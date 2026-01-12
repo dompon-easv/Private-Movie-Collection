@@ -89,6 +89,15 @@ public class MovieDao implements IMovieDao {
         }
     }
 
+    public void updateLastView(int movieId) throws SQLException {
+        String sql = "UPDATE movie SET lastview = GETDATE() WHERE id = ?";
+        try(Connection con = ConnectionManager.getConnection();
+        PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, movieId);
+            stmt.executeUpdate();
+        }
+    }
+
     // adding movies to db
     // deleting movies from db
     //editing movies on db

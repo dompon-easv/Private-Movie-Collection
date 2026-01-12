@@ -166,11 +166,14 @@ public class MainScreenController implements Initializable {
         }
 
         try {
+            movieManager.updateLastView(selectedMovie.getId());
             Desktop.getDesktop().open(new File(selectedMovie.getFileLink()));
         } catch (IOException e){
             Alert alert = new Alert(Alert.AlertType.ERROR, "Could not open the movie:\n" + e.getMessage());
             alert.showAndWait();
             e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 

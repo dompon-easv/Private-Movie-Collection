@@ -15,4 +15,6 @@ public interface IMovieDao {
     void editMovie(Movie movie) throws SQLException;
 
     void deleteMovie(int id) throws SQLException;
+
+    void updateLastView(int movieId) throws SQLException;
 }
