@@ -2,6 +2,7 @@ package dk.easv.privatemoviecollection.gui;
 
 import dk.easv.privatemoviecollection.bll.CategoryManager;
 import dk.easv.privatemoviecollection.bll.MovieManager;
+import dk.easv.privatemoviecollection.gui.helpers.AlertHelper;
 import dk.easv.privatemoviecollection.model.Category;
 import dk.easv.privatemoviecollection.model.Movie;
 import javafx.beans.property.SimpleStringProperty;
@@ -20,6 +21,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class AddMovieController implements Initializable {
@@ -72,17 +75,33 @@ public class AddMovieController implements Initializable {
 
     public void onClickSave(ActionEvent event) throws SQLException {
         String title = txtTitle.getText();
-        double imdbRating = Double.parseDouble(txtIMDBRating.getText());
-        double myRating = Double.parseDouble(txtMyRating.getText());
+        String imdbText = txtIMDBRating.getText(); //need to use String then change it to double
+        String myRatingText = txtMyRating.getText();
         String filePath = lblFilePath.getText();
 
-        if(filePath.isEmpty()) {
-            Alert.AlertType alertType = Alert.AlertType.ERROR;
-            Alert alert = new Alert(alertType);
-            alert.setTitle("Error");
-            alert.showAndWait();
+        //Check if textfield is empty
+        List<String> missingFields = new ArrayList<>();
+        if(title.isEmpty()) missingFields.add("Title");
+        if(imdbText.isEmpty()) missingFields.add("IMDB Rating");
+        if(myRatingText.isEmpty()) missingFields.add("My Rating");
+        if(filePath.isEmpty()) missingFields.add("File path");
+
+        if(!missingFields.isEmpty()) {
+        AlertHelper.showAlert("Please fill out all the required fields " + String.join (", ",  missingFields));
             return;
         }
+
+        double imdbRating;
+        double myRating;
+
+        try{
+            imdbRating = Double.parseDouble(imdbText);
+            myRating = Double.parseDouble(myRatingText);
+        } catch (NumberFormatException e) {
+            AlertHelper.showAlert("Please enter a valid rating");
+            return;
+        }
+
 
         Movie newMovie = movieManager.addMovie(title, imdbRating,myRating,filePath);
         ObservableList<Category> selectedCategories = lstAllCategories.getSelectionModel().getSelectedItems();

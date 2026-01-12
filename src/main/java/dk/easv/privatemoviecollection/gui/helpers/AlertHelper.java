@@ -6,29 +6,12 @@ import javafx.scene.control.ButtonType;
 import java.util.Optional;
 
 public class AlertHelper {
-    public static void showWarning(String message) {
+    public static void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Warning");
+        alert.setTitle("Alert");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
-    }
-
-    public static void showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    public static void showInfo(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Info");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-
     }
 
     public static Optional<ButtonType> showConfirmation(String message){
