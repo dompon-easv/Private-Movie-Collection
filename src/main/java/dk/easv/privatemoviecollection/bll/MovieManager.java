@@ -3,6 +3,7 @@ package dk.easv.privatemoviecollection.bll;
 import dk.easv.privatemoviecollection.dal.dao.MovieDao;
 import dk.easv.privatemoviecollection.dal.daoInterface.IMovieDao;
 import dk.easv.privatemoviecollection.model.Movie;
+import javafx.collections.ObservableList;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,12 +25,21 @@ public class MovieManager {
             return movie;
         }
         else {
+
             return null;
         }
 
     }
-    public List<Movie> getAllMovies() throws SQLException {
-        return movieDao.getAllMovies();
+
+
+    public List<Movie> getAllMovies() {
+        try {
+            return movieDao.getAllMovies();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return List.of();
+        }
+
     }
 
     public void deleteMovie(int id) throws SQLException {

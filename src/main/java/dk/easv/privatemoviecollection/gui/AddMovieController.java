@@ -51,11 +51,8 @@ public class AddMovieController implements Initializable {
     }
 
     private void handleDoubleClick() {
-        try {
             lstAllCategories.setItems(FXCollections.observableArrayList(categoryManager.getCategories()));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+
         lstAllCategories.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 Category selected = lstAllCategories.getSelectionModel().getSelectedItem();
@@ -132,7 +129,9 @@ public class AddMovieController implements Initializable {
                 Files.copy(selectedFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
                 String relativePath = baseFolder + selectedFile.getName();
-                lblFilePath.setText(relativePath);
+                if(relativePath.endsWith(".mp4") || relativePath.endsWith(".mpeg4")) {
+                lblFilePath.setText(relativePath);}
+                else { lblFilePath.setText("Incorrect file format!");}
 
             }catch (Exception e){
                 e.printStackTrace();
@@ -142,11 +141,8 @@ public class AddMovieController implements Initializable {
 
     public void loadCategories() {
         lstAllCategories.getItems().clear();
-        try{
-            lstAllCategories.getItems().setAll(categoryManager.getCategories());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        lstAllCategories.getItems().setAll(categoryManager.getCategories());
+
     }
 
     @Override

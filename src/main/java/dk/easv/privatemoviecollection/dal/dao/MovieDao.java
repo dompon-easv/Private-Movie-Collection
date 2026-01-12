@@ -35,7 +35,8 @@ public class MovieDao implements IMovieDao {
         }
     }
     @Override
-    public List<Movie> getAllMovies() throws SQLException { List<Movie> movies = new ArrayList<>(); String sql = """
+    public List<Movie> getAllMovies() throws SQLException {
+        List<Movie> movies = new ArrayList<>(); String sql = """
         SELECT id, title, imdbrating, myrating, filelink
         FROM movie """;
         try (Connection con = db.getConnection();

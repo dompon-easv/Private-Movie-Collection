@@ -2,6 +2,7 @@ package dk.easv.privatemoviecollection.gui;
 
 import dk.easv.privatemoviecollection.HelloApplication;
 import dk.easv.privatemoviecollection.bll.CategoryManager;
+import dk.easv.privatemoviecollection.bll.FilterManager;
 import dk.easv.privatemoviecollection.bll.MovieManager;
 import dk.easv.privatemoviecollection.model.Category;
 import dk.easv.privatemoviecollection.model.Movie;
@@ -46,15 +47,36 @@ public class MainScreenController implements Initializable {
     @FXML
     private TableColumn<Movie, String> colMyRating;
 
+    private FilteredList<Category> filteredCategories;
+    private FilteredList<Movie> filteredMovies;
+
     private CategoryManager categoryManager;
     private MovieManager movieManager;
+    private FilterManager filterManager;
 
 
-    public void init(CategoryManager categoryManager, MovieManager movieManager) {
+    public void init(CategoryManager categoryManager, MovieManager movieManager, FilterManager filterManager) {
         this.categoryManager = categoryManager;
         this.movieManager = movieManager;
-                loadCategories();
-                loadMovies();
+        this.filterManager = filterManager;
+
+        // 1. changing the lists into observablelists
+        ObservableList<Movie> movieObservableList = FXCollections.observableArrayList(movieManager.getAllMovies());
+        ObservableList<Category> categoryObservableList = FXCollections.observableArrayList(categoryManager.getCategories());
+
+        // 2. putting the observable lists into filtered lists
+        filteredCategories = new FilteredList<>(categoryObservableList);
+        filteredMovies = new FilteredList<>(movieObservableList);
+
+        // 3. populating the tables with the filterable lists
+        tblCategories.setItems(filteredCategories);
+        tblMovies.setItems(filteredMovies);
+
+        // 4. listener of the filter
+
+        txtFilter.textProperty().addListener((observable, oldValue, newValue) -> {
+            filterManager.filterLists(newValue, filteredCategories, filteredMovies);
+        });
     }
 
 
@@ -76,7 +98,6 @@ public class MainScreenController implements Initializable {
             categoryManager.deleteCategory(getSelectedCategory().getId());
             loadCategories();
         }
-        else return;
     }
 
     public void onClickAddMovie(ActionEvent event) throws IOException, SQLException {
@@ -97,7 +118,6 @@ public class MainScreenController implements Initializable {
             movieManager.deleteMovie(getSelectedMovie().getId());
            loadMovies();
         }
-        else return;
     }
 
 
@@ -105,21 +125,11 @@ public class MainScreenController implements Initializable {
     }
 
     public void loadCategories() {
-        //tblCategories.getItems().clear();
-        try{
             tblCategories.getItems().setAll(categoryManager.getCategories());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public void loadMovies() {
-        //tblMovies.getItems().clear();
-        try {
             tblMovies.getItems().setAll(movieManager.getAllMovies());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public Category getSelectedCategory() {
@@ -133,8 +143,9 @@ public class MainScreenController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        colCategory.setCellValueFactory( c -> new SimpleStringProperty(c.getValue().getName()));
 
+        //table column setup
+        colCategory.setCellValueFactory( c -> new SimpleStringProperty(c.getValue().getName()));
         colTitle.setCellValueFactory(m -> new SimpleStringProperty(m.getValue().getTitle()));
         colImdbRating.setCellValueFactory(m -> {
             return new SimpleStringProperty(String.valueOf(m.getValue().getImdbRating()));
@@ -149,6 +160,14 @@ public class MainScreenController implements Initializable {
                 loadMoviesForCategory(newValue.getId());
             }
         });
+
+        //listener for filtering
+        txtFilter.textProperty().addListener((observable, oldValue, newValue) -> {
+            if(filterManager!=null && filteredCategories != null && filteredMovies != null) {
+                filterManager.filterLists(newValue, filteredCategories, filteredMovies);
+            }
+        });
+
     }
 
 

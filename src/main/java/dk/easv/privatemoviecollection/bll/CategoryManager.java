@@ -28,8 +28,13 @@ public class CategoryManager {
         return category;
     }
 
-    public List<Category> getCategories() throws SQLException {
-    return categoryDao.getAllCategories();
+    public List<Category> getCategories() {
+        try {
+            return categoryDao.getAllCategories();
+        }catch (SQLException e) {
+            e.printStackTrace();
+            return List.of();
+        }
     }
 
    public void deleteCategory(int id) throws SQLException {
