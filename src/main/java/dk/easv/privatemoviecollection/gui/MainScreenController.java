@@ -4,6 +4,7 @@ import dk.easv.privatemoviecollection.HelloApplication;
 import dk.easv.privatemoviecollection.bll.CategoryManager;
 import dk.easv.privatemoviecollection.bll.FilterManager;
 import dk.easv.privatemoviecollection.bll.MovieManager;
+import dk.easv.privatemoviecollection.gui.helpers.AlertHelper;
 import dk.easv.privatemoviecollection.model.Category;
 import dk.easv.privatemoviecollection.model.Movie;
 import javafx.application.Platform;
@@ -210,5 +211,11 @@ public class MainScreenController implements Initializable {
     public void showAllMovies(ActionEvent event) {
         tblMovies.getItems().clear();
         loadMovies();
+    }
+
+    public void runStartupChecks() throws SQLException {
+        movieManager.shouldWarnAboutOldAndLowRatedMovies();
+        AlertHelper.showAlert("You have movies with a personal rating under 6\n" +
+                "that have not been opened in more than 2 years.");
     }
 }
