@@ -3,6 +3,7 @@ package dk.easv.privatemoviecollection.gui;
 import dk.easv.privatemoviecollection.HelloApplication;
 import dk.easv.privatemoviecollection.bll.CategoryManager;
 import dk.easv.privatemoviecollection.bll.MovieManager;
+import dk.easv.privatemoviecollection.gui.helpers.AlertHelper;
 import dk.easv.privatemoviecollection.model.Category;
 import dk.easv.privatemoviecollection.model.Movie;
 import javafx.application.Platform;
@@ -97,7 +98,8 @@ public class MainScreenController implements Initializable {
             movieManager.deleteMovie(getSelectedMovie().getId());
            loadMovies();
         }
-        else return;
+        else
+            AlertHelper.showAlert("Choose a movie to delete");
     }
 
 
@@ -156,21 +158,14 @@ public class MainScreenController implements Initializable {
         Movie selectedMovie = tblMovies.getSelectionModel().getSelectedItem();
 
         if(selectedMovie == null || !movieManager.canOpenMovie(selectedMovie.getFileLink())){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Cannot open movie");
-            alert.setContentText(selectedMovie == null ?
-                    "Please select a movie to open" :
-                    "File does not exist: " + selectedMovie.getFileLink());
-            alert.showAndWait();
-            return;
+            AlertHelper.showAlert("Choose a movie to open it");
         }
 
         try {
             movieManager.updateLastView(selectedMovie.getId());
             Desktop.getDesktop().open(new File(selectedMovie.getFileLink()));
         } catch (IOException e){
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not open the movie:\n" + e.getMessage());
-            alert.showAndWait();
+            AlertHelper.showAlert("Could not open the file");
             e.printStackTrace();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -182,8 +177,7 @@ public class MainScreenController implements Initializable {
             tblMovies.setItems(FXCollections.observableArrayList(categoryManager.getAllMoviesForCategory(categoryId)));
             }
         catch (SQLException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR,"Could not load movies for category");
-            alert.showAndWait();
+            AlertHelper.showAlert("Could not load movies for Category");
             e.printStackTrace();
         }
     }
