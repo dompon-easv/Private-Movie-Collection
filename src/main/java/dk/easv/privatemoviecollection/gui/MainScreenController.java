@@ -184,4 +184,9 @@ public class MainScreenController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    public void showAllMovies(ActionEvent event) {
+        tblMovies.getItems().clear();
+        loadMovies();
+    }
 }
