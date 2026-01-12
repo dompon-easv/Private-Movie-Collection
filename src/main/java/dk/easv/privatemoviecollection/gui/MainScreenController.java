@@ -99,6 +99,7 @@ public class MainScreenController implements Initializable {
             categoryManager.deleteCategory(getSelectedCategory().getId());
             loadCategories();
         }
+        else return;
     }
 
     public void onClickAddMovie(ActionEvent event) throws IOException, SQLException {
@@ -119,6 +120,7 @@ public class MainScreenController implements Initializable {
             movieManager.deleteMovie(getSelectedMovie().getId());
            loadMovies();
         }
+        else return;
     }
 
 
@@ -144,9 +146,8 @@ public class MainScreenController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-        //table column setup
         colCategory.setCellValueFactory( c -> new SimpleStringProperty(c.getValue().getName()));
+
         colTitle.setCellValueFactory(m -> new SimpleStringProperty(m.getValue().getTitle()));
         colImdbRating.setCellValueFactory(m -> {
             return new SimpleStringProperty(String.valueOf(m.getValue().getImdbRating()));
@@ -176,21 +177,14 @@ public class MainScreenController implements Initializable {
         Movie selectedMovie = tblMovies.getSelectionModel().getSelectedItem();
 
         if(selectedMovie == null || !movieManager.canOpenMovie(selectedMovie.getFileLink())){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Cannot open movie");
-            alert.setContentText(selectedMovie == null ?
-                    "Please select a movie to open" :
-                    "File does not exist: " + selectedMovie.getFileLink());
-            alert.showAndWait();
-            return;
+            AlertHelper.showAlert("Choose a movie to open it");
         }
 
         try {
             movieManager.updateLastView(selectedMovie.getId());
             Desktop.getDesktop().open(new File(selectedMovie.getFileLink()));
         } catch (IOException e){
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not open the movie:\n" + e.getMessage());
-            alert.showAndWait();
+            AlertHelper.showAlert("Could not open the file");
             e.printStackTrace();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -202,8 +196,7 @@ public class MainScreenController implements Initializable {
             tblMovies.setItems(FXCollections.observableArrayList(categoryManager.getAllMoviesForCategory(categoryId)));
             }
         catch (SQLException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR,"Could not load movies for category");
-            alert.showAndWait();
+            AlertHelper.showAlert("Could not load movies for Category");
             e.printStackTrace();
         }
     }
