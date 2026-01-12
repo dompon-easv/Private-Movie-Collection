@@ -30,12 +30,20 @@ public class HelloApplication extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/dk/easv/privatemoviecollection/gui/MainScreen.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setResizable(false);
-
+        stage.setTitle("Movie Collection");
+        stage.setScene(scene);
 
         MainScreenController controller = fxmlLoader.getController();
         controller.init(categoryManager, movieManager);
-        stage.setTitle("Movie Collection");
-        stage.setScene(scene);
+
+        stage.setOnShown(event -> {
+            try {
+                controller.runStartupChecks();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
         stage.show();
     }
 }

@@ -17,4 +17,6 @@ public interface IMovieDao {
     void deleteMovie(int id) throws SQLException;
 
     void updateLastView(int movieId) throws SQLException;
+
+    boolean isOldAndHasLowRating() throws SQLException;
 }

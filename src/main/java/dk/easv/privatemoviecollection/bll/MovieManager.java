@@ -5,7 +5,6 @@ import dk.easv.privatemoviecollection.dal.daoInterface.IMovieDao;
 import dk.easv.privatemoviecollection.model.Movie;
 
 import java.io.File;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -47,6 +46,10 @@ public class MovieManager {
 
     public void updateLastView(int movieId) throws SQLException {
         movieDao.updateLastView(movieId);
+    }
+
+    public boolean shouldWarnAboutOldAndLowRatedMovies() throws SQLException {
+        return movieDao.isOldAndHasLowRating();
     }
 
 
