@@ -19,9 +19,13 @@ public class MovieManager {
 
     public Movie addMovie(String title, double imdbRating, double myRating, String filePath) throws SQLException {
         Movie movie = new Movie(title, imdbRating, myRating, filePath);
-
-        movieDao.addMovie(movie);
-        return movie;
+        if(isFormatCorrect(filePath)) {
+            movieDao.addMovie(movie);
+            return movie;
+        }
+        else {
+            return null;
+        }
 
     }
     public List<Movie> getAllMovies() throws SQLException {
@@ -37,6 +41,9 @@ public class MovieManager {
     }
 
     public boolean isFormatCorrect(String filePath)
+    {
+        return filePath.endsWith(".mp4") || filePath.endsWith(".mpeg4");
+    }
         
 
     // preventing adding another movie with the same path?
