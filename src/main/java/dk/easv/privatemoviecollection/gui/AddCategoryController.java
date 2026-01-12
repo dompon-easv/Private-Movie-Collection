@@ -16,9 +16,11 @@ public class AddCategoryController {
     private TextField txtNewCategory;
 
     private CategoryManager categoryManager;
+    private MainScreenController mainScreenController;
 
-    public void init(CategoryManager categoryManager) {
+    public void init(CategoryManager categoryManager, MainScreenController mainScreenController) {
         this.categoryManager = categoryManager;
+        this.mainScreenController = mainScreenController;
     }
 
     @FXML
@@ -38,6 +40,7 @@ public class AddCategoryController {
 
             try {
                 Category newCategory = categoryManager.addCategory(category);
+                mainScreenController.loadCategories();
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 stage.close();
 

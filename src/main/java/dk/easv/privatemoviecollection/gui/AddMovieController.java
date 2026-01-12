@@ -28,7 +28,7 @@ public class AddMovieController implements Initializable {
     @FXML private TextField txtIMDBRating;
     @FXML private TextField txtMyRating;
     @FXML private ListView<Category> lstAllCategories;
-    @FXML private ListView lstChosenCategories;
+    @FXML private ListView<Category> lstChosenCategories;
     @FXML private Label lblFilePath;
 
     private ObservableList<Movie> movieList = FXCollections.observableArrayList();
@@ -36,11 +36,31 @@ public class AddMovieController implements Initializable {
 
     private MovieManager movieManager;
     private CategoryManager categoryManager;
+    private MainScreenController mainScreenController;
 
-    public void init(CategoryManager categoryManager, MovieManager movieManager) throws SQLException {
+    public void init(CategoryManager categoryManager, MovieManager movieManager, MainScreenController mainScreenController) throws SQLException {
         this.categoryManager = categoryManager;
         this.movieManager = movieManager;
+        this.mainScreenController = mainScreenController;
         loadCategories();
+        handleDoubleClick();
+
+    }
+
+    private void handleDoubleClick() {
+        try {
+            lstAllCategories.setItems(FXCollections.observableArrayList(categoryManager.getCategories()));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        lstAllCategories.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                Category selected = lstAllCategories.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    selectCategory();
+                }
+            }
+        });
 
     }
 
@@ -69,6 +89,7 @@ public class AddMovieController implements Initializable {
         if(selectedCategories != null && !selectedCategories.isEmpty()) {
             for (Category category : selectedCategories) {
                 categoryManager.addMovieToCategory(newMovie.getId(), category.getId());
+                mainScreenController.loadMovies();
             }
         }
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -111,6 +132,17 @@ public class AddMovieController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        lstAllCategories.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+       lstAllCategories.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        }
+
+
+    public void selectCategory() {
+        Category selected = lstAllCategories.getSelectionModel().getSelectedItem();
+        ObservableList<Category> selectedCategories = lstChosenCategories.getItems();
+        if (!selectedCategories.contains(selected)) {
+            selectedCategories.add(selected);
+            lstAllCategories.getItems().remove(selected);
+        }
+
     }
 }

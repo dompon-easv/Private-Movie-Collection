@@ -65,7 +65,7 @@ public class MainScreenController implements Initializable {
         stage.setResizable(false);
         
         AddCategoryController controller = fxmlLoader.getController();
-        controller.init(categoryManager);
+        controller.init(categoryManager, this);
         stage.setTitle("Add Category");
         stage.setScene(scene);
         stage.show();
@@ -86,7 +86,7 @@ public class MainScreenController implements Initializable {
         stage.setResizable(false);
 
         AddMovieController controller = fxmlLoader.getController();
-        controller.init(categoryManager, movieManager);
+        controller.init(categoryManager, movieManager, this);
         stage.setTitle("Add Movie");
         stage.setScene(scene);
         stage.show();

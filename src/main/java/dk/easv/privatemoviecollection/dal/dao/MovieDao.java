@@ -75,9 +75,14 @@ public class MovieDao implements IMovieDao {
 
     public void deleteMovie(int id) {
         String sql = "DELETE FROM movie WHERE id = ?";
+        String sql2 = "DELETE FROM CatMovie WHERE MovieId = ?";
         try  (Connection con = ConnectionManager.getConnection();
-              PreparedStatement stmt = con.prepareStatement(sql))
-        { stmt.setInt(1, id);
+              PreparedStatement stmt = con.prepareStatement(sql);
+              PreparedStatement stmt2 = con.prepareStatement(sql2))
+        { stmt2.setInt(1, id);
+            stmt2.executeUpdate();
+
+            stmt.setInt(1, id);
             stmt.executeUpdate();
         } catch(SQLException e) {
             e.printStackTrace();
