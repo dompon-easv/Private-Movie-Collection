@@ -36,6 +36,9 @@ public class MovieManager {
         return filePath != null && new File(filePath).exists();
     }
 
+    public boolean isFormatCorrect(String filePath)
+        
+
     // preventing adding another movie with the same path?
     // checking if format is correct - only mp4
     // creating instances of movies
