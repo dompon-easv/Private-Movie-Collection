@@ -156,13 +156,13 @@ public class MainScreenController implements Initializable {
     public void onClickOpenInApp(ActionEvent actionEvent) {
         Movie selectedMovie = tblMovies.getSelectionModel().getSelectedItem();
 
-        if(selectedMovie == null || !movieManager.canOpenMovie(selectedMovie.getFileLink())){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Cannot open movie");
-            alert.setContentText(selectedMovie == null ?
-                    "Please select a movie to open" :
-                    "File does not exist: " + selectedMovie.getFileLink());
-            alert.showAndWait();
+        if(selectedMovie == null) {
+            AlertHelper.showAlert("Select a movie to open");
+            return;
+        }
+
+        if(!movieManager.canOpenMovie(selectedMovie.getFileLink())){
+            AlertHelper.showAlert("File does not exist as in the path:\n" + selectedMovie.getFileLink());
             return;
         }
 
@@ -170,11 +170,11 @@ public class MainScreenController implements Initializable {
             movieManager.updateLastView(selectedMovie.getId());
             Desktop.getDesktop().open(new File(selectedMovie.getFileLink()));
         } catch (IOException e){
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not open the movie:\n" + e.getMessage());
-            alert.showAndWait();
+            AlertHelper.showAlert("Could not open the movie");
             e.printStackTrace();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            AlertHelper.showAlert("Could not update last view date");
+            e.printStackTrace();
         }
     }
 
@@ -183,8 +183,7 @@ public class MainScreenController implements Initializable {
             tblMovies.setItems(FXCollections.observableArrayList(categoryManager.getAllMoviesForCategory(categoryId)));
             }
         catch (SQLException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR,"Could not load movies for category");
-            alert.showAndWait();
+            AlertHelper.showAlert("Could not load movies for the selected category");
             e.printStackTrace();
         }
     }
@@ -195,8 +194,14 @@ public class MainScreenController implements Initializable {
     }
 
     public void runStartupChecks() throws SQLException {
-        movieManager.shouldWarnAboutOldAndLowRatedMovies();
-        AlertHelper.showAlert("You have movies with a personal rating under 6\n" +
-                "that have not been opened in more than 2 years.");
+        try {
+            if (movieManager.shouldWarnAboutOldAndLowRatedMovies()) {
+                AlertHelper.showAlert("You have movies with a personal rating under 6\n" +
+                        "that have not been opened in more than 2 years.");
+            }
+        } catch (SQLException e) {
+            AlertHelper.showAlert("Could not run startup checks");
+            e.printStackTrace();
+        }
     }
 }
