@@ -55,6 +55,20 @@ public class CategoryManager {
             throw new CategoryException("Failed to get all movies for category",e);
         }
    }
+    public List<Category> getCategoriesForMovie(int movieId) throws SQLException {
+        return categoryDao.getCategoriesForMovie(movieId);
+    }
+    public void updateMovieCategories(int movieId,
+                                      List<Category> categories)
+            throws SQLException { categoryDao.deleteCategoriesForMovie(movieId);
+
+        for (Category category : categories) {
+            categoryDao.addCategoryToMovie(movieId, category.getId());
+        }
+    }
+
+
+
 
     // adding category instance
     //deleting
