@@ -1,6 +1,7 @@
 package dk.easv.privatemoviecollection.gui;
 
 import dk.easv.privatemoviecollection.bll.CategoryManager;
+import dk.easv.privatemoviecollection.bll.exceptions.CategoryException;
 import dk.easv.privatemoviecollection.gui.helpers.AlertHelper;
 import dk.easv.privatemoviecollection.model.Category;
 import javafx.event.ActionEvent;
@@ -39,13 +40,12 @@ public class AddCategoryController {
         else {
 
             try {
-                Category newCategory = categoryManager.addCategory(category);
                 mainScreenController.loadCategories();
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 stage.close();
 
-            }catch (SQLException e){
-                e.printStackTrace();
+            } catch (CategoryException e) {
+                AlertHelper.showAlert(e.getMessage());
             }
         }
     }

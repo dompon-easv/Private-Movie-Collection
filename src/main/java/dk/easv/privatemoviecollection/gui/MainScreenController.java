@@ -4,6 +4,8 @@ import dk.easv.privatemoviecollection.HelloApplication;
 import dk.easv.privatemoviecollection.bll.CategoryManager;
 import dk.easv.privatemoviecollection.bll.FilterManager;
 import dk.easv.privatemoviecollection.bll.MovieManager;
+import dk.easv.privatemoviecollection.bll.exceptions.CategoryException;
+import dk.easv.privatemoviecollection.bll.exceptions.MovieException;
 import dk.easv.privatemoviecollection.gui.helpers.AlertHelper;
 import dk.easv.privatemoviecollection.model.Category;
 import dk.easv.privatemoviecollection.model.Movie;
@@ -33,20 +35,14 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class MainScreenController implements Initializable {
-    @FXML
-    private TableView<Category> tblCategories;
-    @FXML
-    private TableView<Movie> tblMovies;
-    @FXML
-    private TextField txtFilter;
-    @FXML
-    private TableColumn<Category, String> colCategory;
-    @FXML
-    private TableColumn<Movie, String> colTitle;
-    @FXML
-    private TableColumn<Movie, String> colImdbRating;
-    @FXML
-    private TableColumn<Movie, String> colMyRating;
+
+    @FXML private TableView<Category> tblCategories;
+    @FXML private TableView<Movie> tblMovies;
+    @FXML private TextField txtFilter;
+    @FXML private TableColumn<Category, String> colCategory;
+    @FXML private TableColumn<Movie, String> colTitle;
+    @FXML private TableColumn<Movie, String> colImdbRating;
+    @FXML private TableColumn<Movie, String> colMyRating;
 
     private FilteredList<Category> filteredCategories;
     private FilteredList<Movie> filteredMovies;
@@ -94,15 +90,20 @@ public class MainScreenController implements Initializable {
         stage.show();
     }
 
-    public void onClickDeleteCategory(ActionEvent event) throws SQLException {
-        if(getSelectedCategory() != null) {
-            categoryManager.deleteCategory(getSelectedCategory().getId());
-            loadCategories();
+    public void onClickDeleteCategory(ActionEvent event) {
+        Category selected = getSelectedCategory();
+        if(selected!= null) {
+            try {
+                categoryManager.deleteCategory(selected.getId());
+                loadCategories();
+            }catch (CategoryException e){
+                AlertHelper.showAlert(e.getMessage());
+            }
         }
-        else return;
+        else AlertHelper.showAlert("Please select a category");
     }
 
-    public void onClickAddMovie(ActionEvent event) throws IOException, SQLException {
+    public void onClickAddMovie(ActionEvent event) throws IOException {
         Stage stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/dk/easv/privatemoviecollection/gui/AddMovie.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
@@ -115,12 +116,16 @@ public class MainScreenController implements Initializable {
         stage.show();
     }
 
-    public void onClickDeleteMovie(ActionEvent event) throws SQLException {
-        if(getSelectedMovie() != null) {
-            movieManager.deleteMovie(getSelectedMovie().getId());
+    public void onClickDeleteMovie(ActionEvent event)  {
+        Movie selected = getSelectedMovie();
+        if(selected != null) {
+            try{
+            movieManager.deleteMovie(selected.getId());
            loadMovies();
-        }
-        else return;
+            }catch (MovieException e){
+                AlertHelper.showAlert(e.getMessage());
+            }
+        }else AlertHelper.showAlert("Please select a movie");
     }
 
 
@@ -191,10 +196,8 @@ public class MainScreenController implements Initializable {
             Desktop.getDesktop().open(new File(selectedMovie.getFileLink()));
         } catch (IOException e){
             AlertHelper.showAlert("Could not open the movie");
-            e.printStackTrace();
-        } catch (SQLException e) {
+        } catch (RuntimeException e) {
             AlertHelper.showAlert("Could not update last view date");
-            e.printStackTrace();
         }
     }
 
@@ -202,26 +205,26 @@ public class MainScreenController implements Initializable {
         try {
             tblMovies.setItems(FXCollections.observableArrayList(categoryManager.getAllMoviesForCategory(categoryId)));
             }
-        catch (SQLException e) {
+        catch (RuntimeException e) {
             AlertHelper.showAlert("Could not load movies for the selected category");
-            e.printStackTrace();
         }
     }
 
     public void showAllMovies(ActionEvent event) {
-        tblMovies.getItems().clear();
-        loadMovies();
+        try{
+            tblMovies.setItems(FXCollections.observableArrayList(movieManager.getAllMovies()));
+        }catch (RuntimeException e) {
+            AlertHelper.showAlert(e.getMessage()); }
     }
 
-    public void runStartupChecks() throws SQLException {
+    public void runStartupChecks()  {
         try {
             if (movieManager.shouldWarnAboutOldAndLowRatedMovies()) {
                 AlertHelper.showAlert("You have movies with a personal rating under 6\n" +
                         "that have not been opened in more than 2 years.");
             }
-        } catch (SQLException e) {
+        } catch (MovieException e) {
             AlertHelper.showAlert("Could not run startup checks");
-            e.printStackTrace();
         }
     }
 }
