@@ -24,21 +24,12 @@ public class MovieManager {
             return movie;
         }
         else {
-
             return null;
         }
 
     }
-
-
-    public List<Movie> getAllMovies() {
-        try {
-            return movieDao.getAllMovies();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return List.of();
-        }
-
+    public List<Movie> getAllMovies() throws SQLException {
+        return movieDao.getAllMovies();
     }
 
     public void deleteMovie(int id) throws SQLException {
@@ -53,10 +44,15 @@ public class MovieManager {
     {
         return filePath.endsWith(".mp4") || filePath.endsWith(".mpeg4");
     }
+    public void updateMovie(Movie movie) throws SQLException {
+        movieDao.updateMovie(movie);
+    }
+
 
     public void updateLastView(int movieId) throws SQLException {
         movieDao.updateLastView(movieId);
     }
+
 
     public boolean shouldWarnAboutOldAndLowRatedMovies() throws SQLException {
         return movieDao.isOldAndHasLowRating();
