@@ -56,8 +56,8 @@ public class MovieDao implements IMovieDao {
 
 
     @Override
-            public void editMovie(Movie movie) throws SQLException {String sql = """
-        UPDATE movie SET title = ?, imdbrating = ?, myrating = ?, filelink = ?
+            public void updateMovie(Movie movie) throws SQLException {String sql = """ 
+        UPDATE movie  SET title = ?, imdbrating = ?, myrating = ?, filelink = ?
         WHERE id = ? """;
 
             try (Connection con = db.getConnection();
@@ -72,6 +72,7 @@ public class MovieDao implements IMovieDao {
                 stmt.executeUpdate();
             }
         }
+        //this is updating you little fuckers(editing)
 
     public void deleteMovie(int id) {
         String sql = "DELETE FROM movie WHERE id = ?";
