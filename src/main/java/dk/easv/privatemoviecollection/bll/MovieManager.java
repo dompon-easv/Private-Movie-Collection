@@ -11,9 +11,9 @@ import java.util.List;
 
 public class MovieManager {
 
-    private static IMovieDao movieDao;
+    private IMovieDao movieDao;
 
-    public MovieManager(MovieDao movieDao) {
+    public MovieManager(IMovieDao movieDao) {
         this.movieDao = movieDao;
     }
 
