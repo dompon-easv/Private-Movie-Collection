@@ -176,18 +176,25 @@ public class MainScreenController implements Initializable {
     public void onClickOpenInApp(ActionEvent actionEvent) {
         Movie selectedMovie = tblMovies.getSelectionModel().getSelectedItem();
 
-        if(selectedMovie == null || !movieManager.canOpenMovie(selectedMovie.getFileLink())){
-            AlertHelper.showAlert("Choose a movie to open it");
+        if(selectedMovie == null) {
+            AlertHelper.showAlert("Select a movie to open");
+            return;
+        }
+
+        if(!movieManager.canOpenMovie(selectedMovie.getFileLink())){
+            AlertHelper.showAlert("File does not exist as in the path:\n" + selectedMovie.getFileLink());
+            return;
         }
 
         try {
             movieManager.updateLastView(selectedMovie.getId());
             Desktop.getDesktop().open(new File(selectedMovie.getFileLink()));
         } catch (IOException e){
-            AlertHelper.showAlert("Could not open the file");
+            AlertHelper.showAlert("Could not open the movie");
             e.printStackTrace();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            AlertHelper.showAlert("Could not update last view date");
+            e.printStackTrace();
         }
     }
 
@@ -196,7 +203,7 @@ public class MainScreenController implements Initializable {
             tblMovies.setItems(FXCollections.observableArrayList(categoryManager.getAllMoviesForCategory(categoryId)));
             }
         catch (SQLException e) {
-            AlertHelper.showAlert("Could not load movies for Category");
+            AlertHelper.showAlert("Could not load movies for the selected category");
             e.printStackTrace();
         }
     }
@@ -207,8 +214,14 @@ public class MainScreenController implements Initializable {
     }
 
     public void runStartupChecks() throws SQLException {
-        movieManager.shouldWarnAboutOldAndLowRatedMovies();
-        AlertHelper.showAlert("You have movies with a personal rating under 6\n" +
-                "that have not been opened in more than 2 years.");
+        try {
+            if (movieManager.shouldWarnAboutOldAndLowRatedMovies()) {
+                AlertHelper.showAlert("You have movies with a personal rating under 6\n" +
+                        "that have not been opened in more than 2 years.");
+            }
+        } catch (SQLException e) {
+            AlertHelper.showAlert("Could not run startup checks");
+            e.printStackTrace();
+        }
     }
 }
