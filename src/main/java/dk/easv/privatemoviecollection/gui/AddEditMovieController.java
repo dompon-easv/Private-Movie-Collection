@@ -16,10 +16,12 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -42,34 +44,35 @@ public class AddEditMovieController implements Initializable {
     private CategoryManager categoryManager;
     private MainScreenController mainScreenController;
 
-    public void init(CategoryManager categoryManager, MovieManager movieManager, MainScreenController mainScreenController) throws SQLException {
+    public void initAdd(CategoryManager categoryManager,
+                        MovieManager movieManager,
+                        MainScreenController mainScreenController) throws IOException {
         this.categoryManager = categoryManager;
         this.movieManager = movieManager;
         this.mainScreenController = mainScreenController;
+        this.mode = MovieAddEditMode.ADD;
+        this.movie = null;
         loadCategories();
         setupCategoryDoubleClick();
-
     }
+
 
     private void setupCategoryDoubleClick() {
 
         // Double-click in ALL → move to CHOSEN
         lstAllCategories.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
-                Category selected =
-                        lstAllCategories.getSelectionModel().getSelectedItem();
+                Category selected = lstAllCategories.getSelectionModel().getSelectedItem();
                 if (selected != null) {
                     lstAllCategories.getItems().remove(selected);
-                    lstChosenCategories.getItems().add(selected);
-                }
+                    lstChosenCategories.getItems().add(selected);}
             }
         });
 
         // Double-click in CHOSEN → move back to ALL
         lstChosenCategories.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
-                Category selected =
-                        lstChosenCategories.getSelectionModel().getSelectedItem();
+                Category selected = lstChosenCategories.getSelectionModel().getSelectedItem();
                 if (selected != null) {
                     lstChosenCategories.getItems().remove(selected);
                     lstAllCategories.getItems().add(selected);
@@ -87,31 +90,60 @@ public class AddEditMovieController implements Initializable {
 
     public void onClickSave(ActionEvent event) throws SQLException {
 
+
         String title = txtTitle.getText();
-        double imdbRating = Double.parseDouble(txtIMDBRating.getText());
-        double myRating = Double.parseDouble(txtMyRating.getText());
+        String imdbText = txtIMDBRating.getText();
+        String myRatingText = txtMyRating.getText();
         String filePath = lblFilePath.getText();
 
-        if (filePath == null || filePath.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setContentText("File path is required");
-            alert.showAndWait();
-            return;}
+        // Validation
+        List<String> missingFields = new ArrayList<>();
+        if (title == null || title.isBlank()) missingFields.add("Title");
+        if (imdbText == null || imdbText.isBlank()) missingFields.add("IMDB Rating");
+        if (myRatingText == null || myRatingText.isBlank()) missingFields.add("My Rating");
+        if (filePath == null || filePath.isBlank()) missingFields.add("File path");
 
-        if (mode == MovieAddEditMode.ADD) {Movie newMovie = movieManager.addMovie( title, imdbRating, myRating, filePath );
-            categoryManager.updateMovieCategories(newMovie.getId(),
-                    lstChosenCategories.getItems() );
+        if (!missingFields.isEmpty()) {
+            AlertHelper.showAlert(
+                    "Please fill out all the required fields: " +
+                            String.join(", ", missingFields)
+            );
+            return;
+        }
 
-        } else { // eidt/update motherfuckers
+        double imdbRating;
+        double myRating;
+
+        try {
+            imdbRating = Double.parseDouble(imdbText);
+            myRating = Double.parseDouble(myRatingText);
+        } catch (NumberFormatException e) {
+            AlertHelper.showAlert("Please enter valid numeric ratings");
+            return;
+        }
+
+        // Safety check
+        if (mode == MovieAddEditMode.EDIT && movie == null) {
+            throw new IllegalStateException("EDIT mode active but movie is null");
+        }
+
+        // Add vs Edit
+        if (mode == MovieAddEditMode.ADD)
+        {Movie newMovie = movieManager.addMovie( title, imdbRating, myRating, filePath );
+            categoryManager.updateMovieCategories( newMovie.getId(),
+                    lstChosenCategories.getItems());
+
+        } else { // edit
 
             movie.setTitle(title);
             movie.setImdbRating(imdbRating);
             movie.setMyRating(myRating);
             movie.setFileLink(filePath);
-
             movieManager.updateMovie(movie);
-            categoryManager.updateMovieCategories(movie.getId(), lstChosenCategories.getItems() );
+            categoryManager.updateMovieCategories(
+                    movie.getId(),
+                    lstChosenCategories.getItems()
+            );
         }
         mainScreenController.loadMovies();
 
@@ -121,6 +153,8 @@ public class AddEditMovieController implements Initializable {
     }
 
 
+
+
     public void onClickBrowse(ActionEvent event) {
         FileChooser fc = new FileChooser();
         fc.setTitle("Choose a file");
@@ -128,7 +162,7 @@ public class AddEditMovieController implements Initializable {
         File selectedFile = fc.showOpenDialog(stage);
         if (selectedFile != null) {
             try {
-                // Destination folder for project
+                // Destinaon folder for project
                 String baseFolder = "src/main/resources/Movies/";
                 File targetFolder = new File(baseFolder);
                 if (!targetFolder.exists()) targetFolder.mkdirs(); // create a folder if is missing
@@ -170,16 +204,7 @@ public class AddEditMovieController implements Initializable {
         lstAllCategories.getItems().removeAll(movieCategories);
     }
 
-// should we delete this?
-    public void selectCategory() {
-        Category selected = lstAllCategories.getSelectionModel().getSelectedItem();
-        ObservableList<Category> selectedCategories = lstChosenCategories.getItems();
-        if (!selectedCategories.contains(selected)) {
-            selectedCategories.add(selected);
-            lstAllCategories.getItems().remove(selected);
-        }
 
-    }
 
     public void initEdit(CategoryManager categoryManager, MovieManager movieManager, MainScreenController mainScreenController,
                          Movie movie) throws SQLException {
