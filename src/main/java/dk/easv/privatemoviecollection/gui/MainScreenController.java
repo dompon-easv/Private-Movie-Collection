@@ -7,13 +7,10 @@ import dk.easv.privatemoviecollection.bll.MovieManager;
 import dk.easv.privatemoviecollection.gui.helpers.AlertHelper;
 import dk.easv.privatemoviecollection.model.Category;
 import dk.easv.privatemoviecollection.model.Movie;
-import javafx.application.Platform;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,7 +18,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.awt.*;
@@ -29,7 +25,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class MainScreenController implements Initializable {
@@ -56,7 +51,7 @@ public class MainScreenController implements Initializable {
     private FilterManager filterManager;
 
 
-    public void init(CategoryManager categoryManager, MovieManager movieManager, FilterManager filterManager) {
+    public void init(CategoryManager categoryManager, MovieManager movieManager, FilterManager filterManager) throws SQLException {
         this.categoryManager = categoryManager;
         this.movieManager = movieManager;
         this.filterManager = filterManager;
@@ -104,12 +99,12 @@ public class MainScreenController implements Initializable {
 
     public void onClickAddMovie(ActionEvent event) throws IOException, SQLException {
         Stage stage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/dk/easv/privatemoviecollection/gui/AddMovie.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/dk/easv/privatemoviecollection/gui/AddEditMovie.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setResizable(false);
 
-        AddMovieController controller = fxmlLoader.getController();
-        controller.init(categoryManager, movieManager, this);
+        AddEditMovieController controller = fxmlLoader.getController();
+        controller.initAdd(categoryManager, movieManager, this);
         stage.setTitle("Add Movie");
         stage.setScene(scene);
         stage.show();
@@ -124,15 +119,52 @@ public class MainScreenController implements Initializable {
     }
 
 
-    public void onClickEditMovie(ActionEvent event) {
+    public void onClickEditMovie(ActionEvent event)  throws IOException, SQLException {
+
+        Movie selectedMovie = getSelectedMovie();
+
+        if (selectedMovie == null) {Alert alert = new Alert(Alert.AlertType.WARNING,
+                    "Please select a movie to edit"); alert.showAndWait();
+            return;
+        }
+
+        Stage stage = new Stage(); FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource(
+                "/dk/easv/privatemoviecollection/gui/AddEditMovie.fxml") );
+        Scene scene = new Scene(fxmlLoader.load());
+        stage.setResizable(false);
+        AddEditMovieController controller = fxmlLoader.getController();
+
+        // EDIT MODE -on progress XD
+        controller.initEdit(
+                categoryManager,
+                movieManager,
+                this,
+                selectedMovie
+        );
+
+        stage.setTitle("Edit Movie");
+        stage.setScene(scene);
+        stage.show();
     }
+
+
 
     public void loadCategories() {
-            tblCategories.getItems().setAll(categoryManager.getCategories());
+        tblCategories.setItems(
+                FXCollections.observableArrayList(
+                        categoryManager.getCategories()
+                )
+        );
     }
 
-    public void loadMovies() {
-            tblMovies.getItems().setAll(movieManager.getAllMovies());
+
+
+    public void loadMovies() throws SQLException {
+        tblMovies.setItems(
+                FXCollections.observableArrayList(
+                        movieManager.getAllMovies()
+                )
+        );
     }
 
     public Category getSelectedCategory() {
@@ -208,7 +240,7 @@ public class MainScreenController implements Initializable {
         }
     }
 
-    public void showAllMovies(ActionEvent event) {
+    public void showAllMovies(ActionEvent event) throws SQLException {
         tblMovies.getItems().clear();
         loadMovies();
     }
