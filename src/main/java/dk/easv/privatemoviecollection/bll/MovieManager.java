@@ -68,6 +68,10 @@ public class MovieManager {
     {
         return filePath.endsWith(".mp4") || filePath.endsWith(".mpeg4");
     }
+    public void updateMovie(Movie movie) throws SQLException {
+        movieDao.updateMovie(movie);
+    }
+
 
     public void updateLastView(int movieId){
         try {

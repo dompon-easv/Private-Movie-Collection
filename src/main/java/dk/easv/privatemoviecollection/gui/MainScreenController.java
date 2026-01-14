@@ -9,8 +9,6 @@ import dk.easv.privatemoviecollection.bll.exceptions.MovieException;
 import dk.easv.privatemoviecollection.gui.helpers.AlertHelper;
 import dk.easv.privatemoviecollection.model.Category;
 import dk.easv.privatemoviecollection.model.Movie;
-import javafx.application.Platform;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,7 +21,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.awt.*;
@@ -31,7 +28,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class MainScreenController implements Initializable {
@@ -58,28 +54,22 @@ public class MainScreenController implements Initializable {
     private FilterManager filterManager;
 
 
-    public void init(CategoryManager categoryManager, MovieManager movieManager, FilterManager filterManager) {
+    public void init(CategoryManager categoryManager, MovieManager movieManager, FilterManager filterManager) throws SQLException {
         this.categoryManager = categoryManager;
         this.movieManager = movieManager;
         this.filterManager = filterManager;
 
         // 1. changing the lists into observablelists
-        movieObservableList = FXCollections.observableArrayList(movieManager.getAllMovies());
-        categoryObservableList = FXCollections.observableArrayList(categoryManager.getCategories());
+        ObservableList<Movie> movieObservableList = FXCollections.observableArrayList(movieManager.getAllMovies());
+        ObservableList<Category> categoryObservableList = FXCollections.observableArrayList(categoryManager.getCategories());
 
-        // 2. putting the observable lists into filtered lists and into sorted lists
+        // 2. putting the observable lists into filtered lists
         filteredCategories = new FilteredList<>(categoryObservableList);
         filteredMovies = new FilteredList<>(movieObservableList);
 
-        sortedMovies = new SortedList<>(filteredMovies);
-        sortedCategories = new SortedList<>(filteredCategories);
-
-        sortedCategories.comparatorProperty().bind(tblCategories.comparatorProperty());
-        sortedMovies.comparatorProperty().bind(tblMovies.comparatorProperty());
-
         // 3. populating the tables with the filterable lists
-        tblCategories.setItems(sortedCategories);
-        tblMovies.setItems(sortedMovies);
+        tblCategories.setItems(filteredCategories);
+        tblMovies.setItems(filteredMovies);
 
         // 4. listener of the filter
 
@@ -117,12 +107,12 @@ public class MainScreenController implements Initializable {
 
     public void onClickAddMovie(ActionEvent event) throws IOException {
         Stage stage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/dk/easv/privatemoviecollection/gui/AddMovie.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/dk/easv/privatemoviecollection/gui/AddEditMovie.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setResizable(false);
 
-        AddMovieController controller = fxmlLoader.getController();
-        controller.init(categoryManager, movieManager, this);
+        AddEditMovieController controller = fxmlLoader.getController();
+        controller.initAdd(categoryManager, movieManager, this);
         stage.setTitle("Add Movie");
         stage.setScene(scene);
         stage.show();
@@ -141,15 +131,56 @@ public class MainScreenController implements Initializable {
     }
 
 
-    public void onClickEditMovie(ActionEvent event) {
+    public void onClickEditMovie(ActionEvent event)  throws IOException, SQLException {
+
+        Movie selectedMovie = getSelectedMovie();
+
+        if (selectedMovie == null) {Alert alert = new Alert(Alert.AlertType.WARNING,
+                    "Please select a movie to edit"); alert.showAndWait();
+            return;
+        }
+
+        Stage stage = new Stage(); FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource(
+                "/dk/easv/privatemoviecollection/gui/AddEditMovie.fxml") );
+        Scene scene = new Scene(fxmlLoader.load());
+        stage.setResizable(false);
+        AddEditMovieController controller = fxmlLoader.getController();
+
+        // EDIT MODE -on progress XD
+        controller.initEdit(
+                categoryManager,
+                movieManager,
+                this,
+                selectedMovie
+        );
+
+        stage.setTitle("Edit Movie");
+        stage.setScene(scene);
+        stage.show();
     }
+
+
 
     public void loadCategories() {
-            tblCategories.getItems().setAll(categoryManager.getCategories());
+        tblCategories.setItems(
+                FXCollections.observableArrayList(
+                        categoryManager.getCategories()
+                )
+        );
     }
 
-    public void loadMovies() {
-        movieObservableList.setAll(movieManager.getAllMovies());
+
+
+    public void loadMovies()  {
+        try{
+            tblMovies.setItems(
+                    FXCollections.observableArrayList(
+                            movieManager.getAllMovies()
+                    )
+            );
+        }catch (MovieException e){
+            AlertHelper.showAlert(e.getMessage());
+        }
     }
 
     public Category getSelectedCategory() {
@@ -214,7 +245,6 @@ public class MainScreenController implements Initializable {
     }
 
     private void loadMoviesForCategory(int categoryId) {
-        movieObservableList.setAll(categoryManager.getAllMoviesForCategory(categoryId));
         try {
             tblMovies.setItems(FXCollections.observableArrayList(categoryManager.getAllMoviesForCategory(categoryId)));
             }
@@ -238,6 +268,7 @@ public class MainScreenController implements Initializable {
             }
         } catch (MovieException e) {
             AlertHelper.showAlert("Could not run startup checks");
+            e.printStackTrace();
         }
     }
 }
