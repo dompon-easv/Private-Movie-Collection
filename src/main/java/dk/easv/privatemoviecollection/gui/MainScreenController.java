@@ -104,6 +104,7 @@ public class MainScreenController implements Initializable {
             try {
                 categoryManager.deleteCategory(selected.getId());
                 loadCategories();
+                loadMovies();
             }catch (CategoryException e){
                 AlertHelper.showAlert(e.getMessage());
             }
