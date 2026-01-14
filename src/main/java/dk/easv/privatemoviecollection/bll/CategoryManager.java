@@ -32,12 +32,20 @@ public class CategoryManager {
         }
     }
 
-   public void deleteCategory(int id) throws SQLException {
-        categoryDao.deleteCategory(id);
+   public void deleteCategory(int id) {
+        try{
+            categoryDao.deleteCategory(id);
+        }catch (SQLException e){
+            throw new CategoryException(e.getMessage());
+        }
    }
 
-    public void addMovieToCategory(int movieId, int categoryId) throws SQLException {
-        categoryDao.addMovieToCategory(movieId, categoryId);
+    public void addMovieToCategory(int movieId, int categoryId){
+        try{
+            categoryDao.addMovieToCategory(movieId, categoryId);
+        }catch (SQLException e){
+            throw new CategoryException(e.getMessage());
+        }
     }
 
     public List<Movie> getAllMoviesForCategory(int categoryId) {
