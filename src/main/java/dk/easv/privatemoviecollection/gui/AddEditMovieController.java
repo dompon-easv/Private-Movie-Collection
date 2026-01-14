@@ -128,23 +128,29 @@ public class AddEditMovieController implements Initializable {
         }
 
         // Add vs Edit
-        if (mode == MovieAddEditMode.ADD)
-        {Movie newMovie = movieManager.addMovie( title, imdbRating, myRating, filePath );
-            categoryManager.updateMovieCategories( newMovie.getId(),
-                    lstChosenCategories.getItems());
+        try {
+            if (mode == MovieAddEditMode.ADD) {
+                Movie newMovie = movieManager.addMovie(title, imdbRating, myRating, filePath);
 
-        } else { // edit
+                categoryManager.updateMovieCategories(newMovie.getId(),
+                        lstChosenCategories.getItems());
 
-            movie.setTitle(title);
-            movie.setImdbRating(imdbRating);
-            movie.setMyRating(myRating);
-            movie.setFileLink(filePath);
-            movieManager.updateMovie(movie);
-            categoryManager.updateMovieCategories(
-                    movie.getId(),
-                    lstChosenCategories.getItems()
-            );
+            } else { // edit
+
+                movie.setTitle(title);
+                movie.setImdbRating(imdbRating);
+                movie.setMyRating(myRating);
+                movie.setFileLink(filePath);
+                movieManager.updateMovie(movie);
+                categoryManager.updateMovieCategories(
+                        movie.getId(),
+                        lstChosenCategories.getItems()
+                );
+            }
         }
+        catch (IllegalArgumentException e)
+            { AlertHelper.showAlert(e.getMessage()); }
+
         mainScreenController.loadMovies();
 
         Stage stage = (Stage) ((Node) event.getSource())
