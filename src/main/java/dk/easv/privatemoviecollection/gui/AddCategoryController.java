@@ -40,6 +40,7 @@ public class AddCategoryController {
         else {
 
             try {
+                categoryManager.addCategory(category);
                 mainScreenController.loadCategories();
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 stage.close();
