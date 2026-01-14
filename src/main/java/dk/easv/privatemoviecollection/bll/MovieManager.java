@@ -1,5 +1,6 @@
 package dk.easv.privatemoviecollection.bll;
 
+import dk.easv.privatemoviecollection.bll.exceptions.MovieException;
 import dk.easv.privatemoviecollection.dal.dao.MovieDao;
 import dk.easv.privatemoviecollection.dal.daoInterface.IMovieDao;
 import dk.easv.privatemoviecollection.model.Movie;
@@ -17,23 +18,46 @@ public class MovieManager {
         this.movieDao = movieDao;
     }
 
-    public Movie addMovie(String title, double imdbRating, double myRating, String filePath) throws SQLException {
+    public Movie addMovie(String title, double imdbRating, double myRating, String filePath){
+        if (title == null || title.length() == 0) {
+            throw new IllegalArgumentException("Title cannot be empty");
+        }
+        if(imdbRating < 0 || imdbRating > 10){
+            throw new IllegalArgumentException("IMDB rating must be between 0 and 10");
+        }
+        if (myRating < 0 || myRating > 10) {
+            throw new IllegalArgumentException("My rating must be between 0 and 10");
+        }
+        if(!isFormatCorrect(filePath)) {
+            throw new IllegalArgumentException("Invalid file path");
+        }
         Movie movie = new Movie(title, imdbRating, myRating, filePath);
-        if(isFormatCorrect(filePath)) {
+
+        try {
             movieDao.addMovie(movie);
-            return movie;
+        }catch (SQLException e){
+                throw new MovieException("Failed to add movie",e );
         }
-        else {
-            return null;
+
+        return movie;
+    }
+
+
+    public List<Movie> getAllMovies() {
+        try {
+            return movieDao.getAllMovies();
+        } catch (SQLException e) {
+            throw new MovieException("Failed to get all movies",e);
         }
 
     }
-    public List<Movie> getAllMovies() throws SQLException {
-        return movieDao.getAllMovies();
-    }
 
-    public void deleteMovie(int id) throws SQLException {
-        movieDao.deleteMovie(id);
+    public void deleteMovie(int id) {
+        try {
+            movieDao.deleteMovie(id);
+        }catch (SQLException e){
+            throw new MovieException("Failed to delete movie",e );
+        }
     }
 
     public boolean canOpenMovie(String filePath) {
@@ -49,13 +73,20 @@ public class MovieManager {
     }
 
 
-    public void updateLastView(int movieId) throws SQLException {
-        movieDao.updateLastView(movieId);
+    public void updateLastView(int movieId){
+        try {
+            movieDao.updateLastView(movieId);
+        }catch (SQLException e) {
+            throw new MovieException("Failed to update last view",e );
+        }
     }
 
-
-    public boolean shouldWarnAboutOldAndLowRatedMovies() throws SQLException {
-        return movieDao.isOldAndHasLowRating();
+    public boolean shouldWarnAboutOldAndLowRatedMovies(){
+        try {
+            return movieDao.isOldAndHasLowRating();
+        }catch (SQLException e) {
+            throw new MovieException("Failed to check if old and low rated movies",e );
+        }
     }
 
 
