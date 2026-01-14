@@ -123,6 +123,21 @@ public class MovieDao implements IMovieDao {
         }
     }
 
+    public boolean filePathExists(String filePath) throws SQLException{
+        String sql = "SELECT COUNT(*) FROM movie WHERE filelink = ?";
+        try (Connection con = ConnectionManager.getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, filePath);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+        return false;
+    }
+
+
     // adding movies to db
     // deleting movies from db
     //editing movies on db

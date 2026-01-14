@@ -19,4 +19,6 @@ public interface IMovieDao {
     void updateLastView(int movieId) throws SQLException;
 
     boolean isOldAndHasLowRating() throws SQLException;
+
+    boolean filePathExists(String filePath) throws SQLException;
 }

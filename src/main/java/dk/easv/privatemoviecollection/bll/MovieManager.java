@@ -18,25 +18,29 @@ public class MovieManager {
         this.movieDao = movieDao;
     }
 
-    public Movie addMovie(String title, double imdbRating, double myRating, String filePath){
+    public Movie addMovie(String title, double imdbRating, double myRating, String filePath) {
         if (title == null || title.length() == 0) {
             throw new IllegalArgumentException("Title cannot be empty");
         }
-        if(imdbRating < 0 || imdbRating > 10){
+        if (imdbRating < 0 || imdbRating > 10) {
             throw new IllegalArgumentException("IMDB rating must be between 0 and 10");
         }
         if (myRating < 0 || myRating > 10) {
             throw new IllegalArgumentException("My rating must be between 0 and 10");
         }
-        if(!isFormatCorrect(filePath)) {
+        if (!isFormatCorrect(filePath)) {
             throw new IllegalArgumentException("Invalid file path");
         }
+        if (filePathExists(filePath)) {
+            throw new IllegalArgumentException("File already exists");
+        }
+
         Movie movie = new Movie(title, imdbRating, myRating, filePath);
 
         try {
             movieDao.addMovie(movie);
-        }catch (SQLException e){
-                throw new MovieException("Failed to add movie",e );
+        } catch (SQLException e) {
+            throw new MovieException("Failed to add movie", e);
         }
 
         return movie;
@@ -47,7 +51,7 @@ public class MovieManager {
         try {
             return movieDao.getAllMovies();
         } catch (SQLException e) {
-            throw new MovieException("Failed to get all movies",e);
+            throw new MovieException("Failed to get all movies", e);
         }
 
     }
@@ -55,8 +59,8 @@ public class MovieManager {
     public void deleteMovie(int id) {
         try {
             movieDao.deleteMovie(id);
-        }catch (SQLException e){
-            throw new MovieException("Failed to delete movie",e );
+        } catch (SQLException e) {
+            throw new MovieException("Failed to delete movie", e);
         }
     }
 
@@ -64,30 +68,39 @@ public class MovieManager {
         return filePath != null && new File(filePath).exists();
     }
 
-    public boolean isFormatCorrect(String filePath)
-    {
+    public boolean isFormatCorrect(String filePath) {
         return filePath.endsWith(".mp4") || filePath.endsWith(".mpeg4");
     }
+
     public void updateMovie(Movie movie) throws SQLException {
         movieDao.updateMovie(movie);
     }
 
 
-    public void updateLastView(int movieId){
+    public void updateLastView(int movieId) {
         try {
             movieDao.updateLastView(movieId);
-        }catch (SQLException e) {
-            throw new MovieException("Failed to update last view",e );
+        } catch (SQLException e) {
+            throw new MovieException("Failed to update last view", e);
         }
     }
 
-    public boolean shouldWarnAboutOldAndLowRatedMovies(){
+    public boolean shouldWarnAboutOldAndLowRatedMovies() {
         try {
             return movieDao.isOldAndHasLowRating();
-        }catch (SQLException e) {
-            throw new MovieException("Failed to check if old and low rated movies",e );
+        } catch (SQLException e) {
+            throw new MovieException("Failed to check if old and low rated movies", e);
         }
     }
+
+    public boolean filePathExists(String filePath) {
+        try {
+            return movieDao.filePathExists(filePath);
+        } catch (SQLException e) {
+            throw new MovieException("Failed to check if file exists", e);
+        }
+    }
+}
 
 
     // preventing adding another movie with the same path?
@@ -95,4 +108,4 @@ public class MovieManager {
     // creating instances of movies
     // editing them
     // getting all movies cause GUI is not allowed to talk to database directly
-}
+
