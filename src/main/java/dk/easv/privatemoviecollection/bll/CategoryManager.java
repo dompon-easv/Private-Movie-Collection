@@ -16,13 +16,22 @@ public class CategoryManager {
     }
 
     public void addCategory(String name) {
-        Category category = new Category(name);
-        try {
-            categoryDao.addCategory(category);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+
+        if(name == null || name.trim().isEmpty()) {
+            throw new CategoryException("Category name cannot be empty");
         }
 
+        String trimmedName = name.trim();
+
+        try {
+            boolean exists = categoryDao.getAllCategories().stream().anyMatch(c -> c.getName().equalsIgnoreCase(trimmedName));
+            if(exists) {
+                throw new CategoryException("The category " + trimmedName + " already exists");}
+
+            categoryDao.addCategory(new Category(trimmedName));
+        } catch (SQLException e) {
+            throw new CategoryException("Could not add category", e);
+        }
     }
 
     public List<Category> getCategories() {
