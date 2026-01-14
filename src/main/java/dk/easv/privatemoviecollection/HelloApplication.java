@@ -1,6 +1,7 @@
 package dk.easv.privatemoviecollection;
 
 import dk.easv.privatemoviecollection.bll.CategoryManager;
+import dk.easv.privatemoviecollection.bll.FilterManager;
 import dk.easv.privatemoviecollection.bll.MovieManager;
 import dk.easv.privatemoviecollection.dal.dao.CategoryDao;
 import dk.easv.privatemoviecollection.dal.ConnectionManager;
@@ -26,6 +27,7 @@ public class HelloApplication extends Application {
 
         CategoryManager categoryManager = new CategoryManager(categoryDao);
         MovieManager movieManager = new MovieManager(movieDao);
+        FilterManager filterManager = new FilterManager();
 
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/dk/easv/privatemoviecollection/gui/MainScreen.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
@@ -33,9 +35,18 @@ public class HelloApplication extends Application {
 
 
         MainScreenController controller = fxmlLoader.getController();
-        controller.init(categoryManager, movieManager);
+        controller.init(categoryManager, movieManager, filterManager);
         stage.setTitle("Movie Collection");
         stage.setScene(scene);
+
+        stage.setOnShown(event -> {
+            try {
+                controller.runStartupChecks();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
         stage.show();
     }
 }

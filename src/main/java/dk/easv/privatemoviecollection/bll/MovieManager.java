@@ -3,6 +3,7 @@ package dk.easv.privatemoviecollection.bll;
 import dk.easv.privatemoviecollection.dal.dao.MovieDao;
 import dk.easv.privatemoviecollection.dal.daoInterface.IMovieDao;
 import dk.easv.privatemoviecollection.model.Movie;
+import javafx.collections.ObservableList;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,9 +12,9 @@ import java.util.List;
 
 public class MovieManager {
 
-    private static IMovieDao movieDao;
+    private IMovieDao movieDao;
 
-    public MovieManager(MovieDao movieDao) {
+    public MovieManager(IMovieDao movieDao) {
         this.movieDao = movieDao;
     }
 
@@ -24,6 +25,7 @@ public class MovieManager {
             return movie;
         }
         else {
+
             return null;
         }
 
@@ -44,7 +46,24 @@ public class MovieManager {
     {
         return filePath.endsWith(".mp4") || filePath.endsWith(".mpeg4");
     }
+<<<<<<< HEAD
         
+=======
+
+    public void updateLastView(int movieId) throws SQLException {
+        movieDao.updateLastView(movieId);
+    }
+    public void updateMovie(Movie movie) throws SQLException {
+        movieDao.updateMovie(movie);
+    }
+
+
+    public boolean shouldWarnAboutOldAndLowRatedMovies() throws SQLException {
+        return movieDao.isOldAndHasLowRating();
+    }
+
+
+>>>>>>> main
 
     // preventing adding another movie with the same path?
     // checking if format is correct - only mp4

@@ -57,7 +57,7 @@
                   <TextField fx:id="txtMyRating" layoutX="14.0" layoutY="165.0" prefHeight="26.0" prefWidth="416.0" />
                   <ListView fx:id="lstAllCategories" layoutX="14.0" layoutY="200.0" prefHeight="189.0" prefWidth="198.0" />
                   <ListView fx:id="lstChosenCategories" layoutX="232.0" layoutY="200.0" prefHeight="189.0" prefWidth="198.0" />
-                  <Label fx:id="lblFilePath" layoutX="14.0" layoutY="55.0" text="Here shows file path" />
+                  <Label fx:id="lblFilePath" layoutX="14.0" layoutY="55.0" text="..." />
                </children>
             </AnchorPane>
          </children>

@@ -2,6 +2,7 @@ package dk.easv.privatemoviecollection.gui;
 
 import dk.easv.privatemoviecollection.bll.CategoryManager;
 import dk.easv.privatemoviecollection.bll.MovieManager;
+import dk.easv.privatemoviecollection.gui.helpers.AlertHelper;
 import dk.easv.privatemoviecollection.model.Category;
 import dk.easv.privatemoviecollection.model.Movie;
 import javafx.beans.property.SimpleStringProperty;
@@ -20,6 +21,11 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
+<<<<<<< HEAD:src/main/java/dk/easv/privatemoviecollection/gui/AddMovieController.java
+=======
+import java.util.ArrayList;
+import java.util.List;
+>>>>>>> main:src/main/java/dk/easv/privatemoviecollection/gui/AddEditMovieController.java
 import java.util.ResourceBundle;
 
 public class AddMovieController implements Initializable {
@@ -48,11 +54,16 @@ public class AddMovieController implements Initializable {
     }
 
     private void handleDoubleClick() {
+<<<<<<< HEAD:src/main/java/dk/easv/privatemoviecollection/gui/AddMovieController.java
         try {
             lstAllCategories.setItems(FXCollections.observableArrayList(categoryManager.getCategories()));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+=======
+            lstAllCategories.setItems(FXCollections.observableArrayList(categoryManager.getCategories()));
+
+>>>>>>> main:src/main/java/dk/easv/privatemoviecollection/gui/AddEditMovieController.java
         lstAllCategories.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 Category selected = lstAllCategories.getSelectionModel().getSelectedItem();
@@ -72,10 +83,11 @@ public class AddMovieController implements Initializable {
 
     public void onClickSave(ActionEvent event) throws SQLException {
         String title = txtTitle.getText();
-        double imdbRating = Double.parseDouble(txtIMDBRating.getText());
-        double myRating = Double.parseDouble(txtMyRating.getText());
+        String imdbText = txtIMDBRating.getText(); //need to use String then change it to double
+        String myRatingText = txtMyRating.getText();
         String filePath = lblFilePath.getText();
 
+<<<<<<< HEAD:src/main/java/dk/easv/privatemoviecollection/gui/AddMovieController.java
         if(filePath.isEmpty()) {
             Alert.AlertType alertType = Alert.AlertType.ERROR;
             Alert alert = new Alert(alertType);
@@ -84,6 +96,32 @@ public class AddMovieController implements Initializable {
             return;
         }
 
+=======
+        //Check if textfield is empty
+        List<String> missingFields = new ArrayList<>();
+        if(title.isEmpty()) missingFields.add("Title");
+        if(imdbText.isEmpty()) missingFields.add("IMDB Rating");
+        if(myRatingText.isEmpty()) missingFields.add("My Rating");
+        if(filePath.isEmpty()) missingFields.add("File path");
+
+        if(!missingFields.isEmpty()) {
+        AlertHelper.showAlert("Please fill out all the required fields " + String.join (", ",  missingFields));
+            return;
+        }
+
+        double imdbRating;
+        double myRating;
+
+        try{
+            imdbRating = Double.parseDouble(imdbText);
+            myRating = Double.parseDouble(myRatingText);
+        } catch (NumberFormatException e) {
+            AlertHelper.showAlert("Please enter a valid rating");
+            return;
+        }
+
+
+>>>>>>> main:src/main/java/dk/easv/privatemoviecollection/gui/AddEditMovieController.java
         Movie newMovie = movieManager.addMovie(title, imdbRating,myRating,filePath);
         ObservableList<Category> selectedCategories = lstAllCategories.getSelectionModel().getSelectedItems();
         if(selectedCategories != null && !selectedCategories.isEmpty()) {
@@ -113,7 +151,9 @@ public class AddMovieController implements Initializable {
                 Files.copy(selectedFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
                 String relativePath = baseFolder + selectedFile.getName();
-                lblFilePath.setText(relativePath);
+                if(relativePath.endsWith(".mp4") || relativePath.endsWith(".mpeg4")) {
+                lblFilePath.setText(relativePath);}
+                else { lblFilePath.setText("Incorrect file format!");}
 
             }catch (Exception e){
                 e.printStackTrace();
@@ -123,11 +163,8 @@ public class AddMovieController implements Initializable {
 
     public void loadCategories() {
         lstAllCategories.getItems().clear();
-        try{
-            lstAllCategories.getItems().setAll(categoryManager.getCategories());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        lstAllCategories.getItems().setAll(categoryManager.getCategories());
+
     }
 
     @Override

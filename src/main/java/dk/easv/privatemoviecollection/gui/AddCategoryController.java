@@ -1,6 +1,7 @@
 package dk.easv.privatemoviecollection.gui;
 
 import dk.easv.privatemoviecollection.bll.CategoryManager;
+import dk.easv.privatemoviecollection.gui.helpers.AlertHelper;
 import dk.easv.privatemoviecollection.model.Category;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -33,8 +34,7 @@ public class AddCategoryController {
     public void onClickAddCategory(ActionEvent event) {
         String category = txtNewCategory.getText();
         if (category.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
+            AlertHelper.showAlert("Please enter a category name");
         }
         else {
 
