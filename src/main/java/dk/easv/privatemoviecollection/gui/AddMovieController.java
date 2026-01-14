@@ -88,9 +88,13 @@ public class AddMovieController implements Initializable {
             AlertHelper.showAlert("Please enter a valid rating");
             return;
         }
+        try {
+            Movie newMovie = movieManager.addMovie(title, imdbRating, myRating, filePath);
+            assignCategories(newMovie);
+        }catch (IllegalArgumentException e){
+            AlertHelper.showAlert((e.getMessage()));
+        }
 
-        Movie newMovie = movieManager.addMovie(title, imdbRating,myRating,filePath);
-        assignCategories(newMovie);
         closeStage(event);
 
     }

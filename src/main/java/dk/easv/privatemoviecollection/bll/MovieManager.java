@@ -22,10 +22,10 @@ public class MovieManager {
         if (title == null || title.length() == 0) {
             throw new IllegalArgumentException("Title cannot be empty");
         }
-        if(imdbRating > 0 || imdbRating < 10){
+        if(imdbRating < 0 || imdbRating > 10){
             throw new IllegalArgumentException("IMDB rating must be between 0 and 10");
         }
-        if (myRating > 0 || myRating < 10) {
+        if (myRating < 0 || myRating > 10) {
             throw new IllegalArgumentException("My rating must be between 0 and 10");
         }
         if(!isFormatCorrect(filePath)) {
