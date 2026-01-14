@@ -13,7 +13,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -54,28 +53,22 @@ public class MainScreenController implements Initializable {
     private FilterManager filterManager;
 
 
-    public void init(CategoryManager categoryManager, MovieManager movieManager, FilterManager filterManager) {
+    public void init(CategoryManager categoryManager, MovieManager movieManager, FilterManager filterManager) throws SQLException {
         this.categoryManager = categoryManager;
         this.movieManager = movieManager;
         this.filterManager = filterManager;
 
         // 1. changing the lists into observablelists
-        movieObservableList = FXCollections.observableArrayList(movieManager.getAllMovies());
-        categoryObservableList = FXCollections.observableArrayList(categoryManager.getCategories());
+        ObservableList<Movie> movieObservableList = FXCollections.observableArrayList(movieManager.getAllMovies());
+        ObservableList<Category> categoryObservableList = FXCollections.observableArrayList(categoryManager.getCategories());
 
-        // 2. putting the observable lists into filtered lists and into sorted lists
+        // 2. putting the observable lists into filtered lists
         filteredCategories = new FilteredList<>(categoryObservableList);
         filteredMovies = new FilteredList<>(movieObservableList);
 
-        sortedMovies = new SortedList<>(filteredMovies);
-        sortedCategories = new SortedList<>(filteredCategories);
-
-        sortedCategories.comparatorProperty().bind(tblCategories.comparatorProperty());
-        sortedMovies.comparatorProperty().bind(tblMovies.comparatorProperty());
-
         // 3. populating the tables with the filterable lists
-        tblCategories.setItems(sortedCategories);
-        tblMovies.setItems(sortedMovies);
+        tblCategories.setItems(filteredCategories);
+        tblMovies.setItems(filteredMovies);
 
         // 4. listener of the filter
 
