@@ -60,16 +60,22 @@ public class MainScreenController implements Initializable {
         this.filterManager = filterManager;
 
         // 1. changing the lists into observablelists
-        ObservableList<Movie> movieObservableList = FXCollections.observableArrayList(movieManager.getAllMovies());
-        ObservableList<Category> categoryObservableList = FXCollections.observableArrayList(categoryManager.getCategories());
+        movieObservableList = FXCollections.observableArrayList(movieManager.getAllMovies());
+        categoryObservableList = FXCollections.observableArrayList(categoryManager.getCategories());
 
         // 2. putting the observable lists into filtered lists
-        filteredCategories = new FilteredList<>(categoryObservableList);
-        filteredMovies = new FilteredList<>(movieObservableList);
+        filteredCategories = new FilteredList<>(categoryObservableList, c -> true);
+        filteredMovies = new FilteredList<>(movieObservableList, m -> true);
+
+        sortedMovies = new SortedList<>(filteredMovies);
+        sortedCategories = new SortedList<>(filteredCategories);
+
+        sortedCategories.comparatorProperty().bind(tblCategories.comparatorProperty());
+        sortedMovies.comparatorProperty().bind(tblMovies.comparatorProperty());
 
         // 3. populating the tables with the filterable lists
-        tblCategories.setItems(filteredCategories);
-        tblMovies.setItems(filteredMovies);
+        tblCategories.setItems(sortedCategories);
+        tblMovies.setItems(sortedMovies);
 
         // 4. listener of the filter
 
@@ -162,22 +168,18 @@ public class MainScreenController implements Initializable {
 
 
     public void loadCategories() {
-        tblCategories.setItems(
-                FXCollections.observableArrayList(
-                        categoryManager.getCategories()
-                )
-        );
+        try {
+            categoryObservableList.setAll(categoryManager.getCategories());
+        } catch (CategoryException e) {
+            AlertHelper.showAlert(e.getMessage());
+        }
     }
 
 
 
     public void loadMovies()  {
         try{
-            tblMovies.setItems(
-                    FXCollections.observableArrayList(
-                            movieManager.getAllMovies()
-                    )
-            );
+            movieObservableList.setAll(movieManager.getAllMovies());
         }catch (MovieException e){
             AlertHelper.showAlert(e.getMessage());
         }
@@ -246,7 +248,7 @@ public class MainScreenController implements Initializable {
 
     private void loadMoviesForCategory(int categoryId) {
         try {
-            tblMovies.setItems(FXCollections.observableArrayList(categoryManager.getAllMoviesForCategory(categoryId)));
+            movieObservableList.setAll(categoryManager.getAllMoviesForCategory(categoryId));
             }
         catch (RuntimeException e) {
             AlertHelper.showAlert("Could not load movies for the selected category");
@@ -255,6 +257,7 @@ public class MainScreenController implements Initializable {
 
     public void showAllMovies(ActionEvent event) {
         try{
+            txtFilter.clear();
             loadMovies();
         }catch (RuntimeException e) {
             AlertHelper.showAlert(e.getMessage()); }
