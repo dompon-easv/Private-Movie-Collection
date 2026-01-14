@@ -6,6 +6,7 @@ import dk.easv.privatemoviecollection.model.Movie;
 import javafx.collections.ObservableList;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -29,16 +30,8 @@ public class MovieManager {
         }
 
     }
-
-
-    public List<Movie> getAllMovies() {
-        try {
-            return movieDao.getAllMovies();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return List.of();
-        }
-
+    public List<Movie> getAllMovies() throws SQLException {
+        return movieDao.getAllMovies();
     }
 
     public void deleteMovie(int id) throws SQLException {
@@ -57,10 +50,15 @@ public class MovieManager {
     public void updateLastView(int movieId) throws SQLException {
         movieDao.updateLastView(movieId);
     }
+    public void updateMovie(Movie movie) throws SQLException {
+        movieDao.updateMovie(movie);
+    }
+
 
     public boolean shouldWarnAboutOldAndLowRatedMovies() throws SQLException {
         return movieDao.isOldAndHasLowRating();
     }
+
 
 
     // preventing adding another movie with the same path?

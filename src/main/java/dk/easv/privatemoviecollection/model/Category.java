@@ -13,10 +13,30 @@ public class Category {
     { this.name = name;
         this.id = id; }
 
+    public Category(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public int getId() { return id; }
 
     @Override
     public String toString() {
         return name;
+    }
+
+    //this litte shit avoid duplicates in categories while adding movie,
+    // if id match they represent the same category
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Category)) return false;
+        Category category = (Category) o;
+        return id == category.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(id);
     }
 }

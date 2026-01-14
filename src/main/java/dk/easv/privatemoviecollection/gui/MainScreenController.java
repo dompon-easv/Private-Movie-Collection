@@ -2,9 +2,7 @@ package dk.easv.privatemoviecollection.gui;
 
 import dk.easv.privatemoviecollection.HelloApplication;
 import dk.easv.privatemoviecollection.bll.CategoryManager;
-import dk.easv.privatemoviecollection.bll.FilterManager;
 import dk.easv.privatemoviecollection.bll.MovieManager;
-import dk.easv.privatemoviecollection.gui.helpers.AlertHelper;
 import dk.easv.privatemoviecollection.model.Category;
 import dk.easv.privatemoviecollection.model.Movie;
 import javafx.application.Platform;
@@ -48,36 +46,15 @@ public class MainScreenController implements Initializable {
     @FXML
     private TableColumn<Movie, String> colMyRating;
 
-    private FilteredList<Category> filteredCategories;
-    private FilteredList<Movie> filteredMovies;
-
     private CategoryManager categoryManager;
     private MovieManager movieManager;
-    private FilterManager filterManager;
 
 
-    public void init(CategoryManager categoryManager, MovieManager movieManager, FilterManager filterManager) {
+    public void init(CategoryManager categoryManager, MovieManager movieManager) {
         this.categoryManager = categoryManager;
         this.movieManager = movieManager;
-        this.filterManager = filterManager;
-
-        // 1. changing the lists into observablelists
-        ObservableList<Movie> movieObservableList = FXCollections.observableArrayList(movieManager.getAllMovies());
-        ObservableList<Category> categoryObservableList = FXCollections.observableArrayList(categoryManager.getCategories());
-
-        // 2. putting the observable lists into filtered lists
-        filteredCategories = new FilteredList<>(categoryObservableList);
-        filteredMovies = new FilteredList<>(movieObservableList);
-
-        // 3. populating the tables with the filterable lists
-        tblCategories.setItems(filteredCategories);
-        tblMovies.setItems(filteredMovies);
-
-        // 4. listener of the filter
-
-        txtFilter.textProperty().addListener((observable, oldValue, newValue) -> {
-            filterManager.filterLists(newValue, filteredCategories, filteredMovies);
-        });
+                loadCategories();
+                loadMovies();
     }
 
 
@@ -128,11 +105,21 @@ public class MainScreenController implements Initializable {
     }
 
     public void loadCategories() {
+        //tblCategories.getItems().clear();
+        try{
             tblCategories.getItems().setAll(categoryManager.getCategories());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void loadMovies() {
+        //tblMovies.getItems().clear();
+        try {
             tblMovies.getItems().setAll(movieManager.getAllMovies());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Category getSelectedCategory() {
@@ -162,38 +149,27 @@ public class MainScreenController implements Initializable {
                 loadMoviesForCategory(newValue.getId());
             }
         });
-
-        //listener for filtering
-        txtFilter.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(filterManager!=null && filteredCategories != null && filteredMovies != null) {
-                filterManager.filterLists(newValue, filteredCategories, filteredMovies);
-            }
-        });
-
     }
 
 
     public void onClickOpenInApp(ActionEvent actionEvent) {
         Movie selectedMovie = tblMovies.getSelectionModel().getSelectedItem();
 
-        if(selectedMovie == null) {
-            AlertHelper.showAlert("Select a movie to open");
-            return;
-        }
-
-        if(!movieManager.canOpenMovie(selectedMovie.getFileLink())){
-            AlertHelper.showAlert("File does not exist as in the path:\n" + selectedMovie.getFileLink());
+        if(selectedMovie == null || !movieManager.canOpenMovie(selectedMovie.getFileLink())){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Cannot open movie");
+            alert.setContentText(selectedMovie == null ?
+                    "Please select a movie to open" :
+                    "File does not exist: " + selectedMovie.getFileLink());
+            alert.showAndWait();
             return;
         }
 
         try {
-            movieManager.updateLastView(selectedMovie.getId());
             Desktop.getDesktop().open(new File(selectedMovie.getFileLink()));
         } catch (IOException e){
-            AlertHelper.showAlert("Could not open the movie");
-            e.printStackTrace();
-        } catch (SQLException e) {
-            AlertHelper.showAlert("Could not update last view date");
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not open the movie:\n" + e.getMessage());
+            alert.showAndWait();
             e.printStackTrace();
         }
     }
@@ -203,7 +179,8 @@ public class MainScreenController implements Initializable {
             tblMovies.setItems(FXCollections.observableArrayList(categoryManager.getAllMoviesForCategory(categoryId)));
             }
         catch (SQLException e) {
-            AlertHelper.showAlert("Could not load movies for the selected category");
+            Alert alert = new Alert(Alert.AlertType.ERROR,"Could not load movies for category");
+            alert.showAndWait();
             e.printStackTrace();
         }
     }
@@ -211,17 +188,5 @@ public class MainScreenController implements Initializable {
     public void showAllMovies(ActionEvent event) {
         tblMovies.getItems().clear();
         loadMovies();
-    }
-
-    public void runStartupChecks() throws SQLException {
-        try {
-            if (movieManager.shouldWarnAboutOldAndLowRatedMovies()) {
-                AlertHelper.showAlert("You have movies with a personal rating under 6\n" +
-                        "that have not been opened in more than 2 years.");
-            }
-        } catch (SQLException e) {
-            AlertHelper.showAlert("Could not run startup checks");
-            e.printStackTrace();
-        }
     }
 }
