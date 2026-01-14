@@ -45,8 +45,13 @@ public class CategoryManager {
         categoryDao.addMovieToCategory(movieId, categoryId);
     }
 
-    public List<Movie> getAllMoviesForCategory(int categoryId) throws SQLException {
-        return categoryDao.getAllMoviesForCategory(categoryId);
+    public List<Movie> getAllMoviesForCategory(int categoryId) {
+        try {
+            return categoryDao.getAllMoviesForCategory(categoryId);
+        }catch (SQLException e) {
+            e.printStackTrace();
+            return List.of();
+        }
    }
 
     // adding category instance
