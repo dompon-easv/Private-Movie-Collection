@@ -45,14 +45,12 @@ public class CategoryDao implements ICategoryDao {
         } return  categories;
     }
 
-    public void deleteCategory(int id) {
+    public void deleteCategory(int id) throws SQLException {
         String sql = "DELETE FROM category WHERE id = ?";
         try  (Connection con = ConnectionManager.getConnection();
-              PreparedStatement stmt = con.prepareStatement(sql))
-        { stmt.setInt(1, id);
+              PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, id);
             stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to delete category", e);
         }
     }
 

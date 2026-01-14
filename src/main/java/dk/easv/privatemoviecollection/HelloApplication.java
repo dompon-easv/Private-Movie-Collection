@@ -3,6 +3,7 @@ package dk.easv.privatemoviecollection;
 import dk.easv.privatemoviecollection.bll.CategoryManager;
 import dk.easv.privatemoviecollection.bll.FilterManager;
 import dk.easv.privatemoviecollection.bll.MovieManager;
+import dk.easv.privatemoviecollection.bll.exceptions.MovieException;
 import dk.easv.privatemoviecollection.dal.dao.CategoryDao;
 import dk.easv.privatemoviecollection.dal.ConnectionManager;
 import dk.easv.privatemoviecollection.dal.dao.MovieDao;
@@ -42,8 +43,8 @@ public class HelloApplication extends Application {
         stage.setOnShown(event -> {
             try {
                 controller.runStartupChecks();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+            } catch (MovieException e) {
+                e.printStackTrace();
             }
         });
 
