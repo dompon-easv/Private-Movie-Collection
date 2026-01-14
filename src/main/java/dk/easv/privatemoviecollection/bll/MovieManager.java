@@ -46,7 +46,6 @@ public class MovieManager {
     {
         return filePath.endsWith(".mp4") || filePath.endsWith(".mpeg4");
     }
-<<<<<<< HEAD
 
     public void updateLastView(int movieId) throws SQLException {
         movieDao.updateLastView(movieId);
@@ -61,9 +60,6 @@ public class MovieManager {
     }
 
 
-=======
-        
->>>>>>> parent of d70ac2c (movies CRUD + edit window +all related to it)
 
     // preventing adding another movie with the same path?
     // checking if format is correct - only mp4

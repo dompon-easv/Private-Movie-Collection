@@ -21,11 +21,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
-<<<<<<< HEAD:src/main/java/dk/easv/privatemoviecollection/gui/AddEditMovieController.java
 import java.util.ArrayList;
 import java.util.List;
-=======
->>>>>>> parent of d70ac2c (movies CRUD + edit window +all related to it):src/main/java/dk/easv/privatemoviecollection/gui/AddMovieController.java
 import java.util.ResourceBundle;
 
 public class AddMovieController implements Initializable {
@@ -54,16 +51,8 @@ public class AddMovieController implements Initializable {
     }
 
     private void handleDoubleClick() {
-<<<<<<< HEAD:src/main/java/dk/easv/privatemoviecollection/gui/AddEditMovieController.java
             lstAllCategories.setItems(FXCollections.observableArrayList(categoryManager.getCategories()));
 
-=======
-        try {
-            lstAllCategories.setItems(FXCollections.observableArrayList(categoryManager.getCategories()));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
->>>>>>> parent of d70ac2c (movies CRUD + edit window +all related to it):src/main/java/dk/easv/privatemoviecollection/gui/AddMovieController.java
         lstAllCategories.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 Category selected = lstAllCategories.getSelectionModel().getSelectedItem();
@@ -87,7 +76,6 @@ public class AddMovieController implements Initializable {
         String myRatingText = txtMyRating.getText();
         String filePath = lblFilePath.getText();
 
-<<<<<<< HEAD:src/main/java/dk/easv/privatemoviecollection/gui/AddEditMovieController.java
         //Check if textfield is empty
         List<String> missingFields = new ArrayList<>();
         if(title.isEmpty()) missingFields.add("Title");
@@ -112,16 +100,6 @@ public class AddMovieController implements Initializable {
         }
 
 
-=======
-        if(filePath.isEmpty()) {
-            Alert.AlertType alertType = Alert.AlertType.ERROR;
-            Alert alert = new Alert(alertType);
-            alert.setTitle("Error");
-            alert.showAndWait();
-            return;
-        }
-
->>>>>>> parent of d70ac2c (movies CRUD + edit window +all related to it):src/main/java/dk/easv/privatemoviecollection/gui/AddMovieController.java
         Movie newMovie = movieManager.addMovie(title, imdbRating,myRating,filePath);
         ObservableList<Category> selectedCategories = lstAllCategories.getSelectionModel().getSelectedItems();
         if(selectedCategories != null && !selectedCategories.isEmpty()) {

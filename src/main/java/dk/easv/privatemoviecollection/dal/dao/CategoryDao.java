@@ -94,6 +94,65 @@ public class CategoryDao implements ICategoryDao {
         return movies;
     }
 
+    public List<Category> getCategoriesForMovie(int movieId) throws SQLException {
+
+        List<Category> categories = new ArrayList<>();
+
+        String sql = """
+            SELECT c.id, c.name
+            FROM Category c
+            INNER JOIN CatMovie cm ON c.id = cm.CategoryId
+            WHERE cm.MovieId = ?
+            ORDER BY c.name
+        """;
+
+        try (Connection con = ConnectionManager.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, movieId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    categories.add(new Category(
+                            rs.getInt("id"),
+                            rs.getString("name")
+                    ));
+                }
+            }
+        }
+
+        return categories;
+    }
+// trying to delete categories from movie so that we can /edit/update ,PD trine rules
+
+public void deleteCategoriesForMovie(int movieId) throws SQLException {
+
+    String sql = "DELETE FROM CatMovie WHERE MovieId = ?";
+
+    try (Connection con = ConnectionManager.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setInt(1, movieId);
+        ps.executeUpdate();
+    }
+}
+    public void addCategoryToMovie(int movieId, int categoryId) throws SQLException {
+
+        String sql = """
+        INSERT INTO CatMovie (MovieId, CategoryId)
+        VALUES (?, ?)
+    """;
+
+        try (Connection con = ConnectionManager.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, movieId);
+            ps.setInt(2, categoryId);
+            ps.executeUpdate();
+        }
+    }
+
+
     //adding do db
     //deleting from db
     //getting from db
