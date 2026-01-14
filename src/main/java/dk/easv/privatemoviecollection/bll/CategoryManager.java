@@ -15,12 +15,14 @@ public class CategoryManager {
         this.categoryDao = categoryDao;
     }
 
-    public Category addCategory(String name) throws SQLException {
+    public void addCategory(String name) {
         Category category = new Category(name);
+        try {
+            categoryDao.addCategory(category);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
-        categoryDao.addCategory(category);
-
-        return category;
     }
 
     public List<Category> getCategories() {
