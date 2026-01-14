@@ -15,13 +15,11 @@ public class CategoryManager {
         this.categoryDao = categoryDao;
     }
 
-    public Category addCategory(String name) {
+    public Category addCategory(String name) throws SQLException {
         Category category = new Category(name);
-        try {
-            categoryDao.addCategory(category);
-        }catch (SQLException e){
-            throw new CategoryException("Failed to add category",e );
-        }
+
+        categoryDao.addCategory(category);
+
         return category;
     }
 
@@ -29,24 +27,17 @@ public class CategoryManager {
         try {
             return categoryDao.getAllCategories();
         }catch (SQLException e) {
-            throw new CategoryException("Failed to get all categories",e);
+            e.printStackTrace();
+            return List.of();
         }
     }
 
-   public void deleteCategory(int id) {
-        try {
-            categoryDao.deleteCategory(id);
-        }catch (SQLException e) {
-            throw new CategoryException("Failed to delete category",e);
-        }
+   public void deleteCategory(int id) throws SQLException {
+        categoryDao.deleteCategory(id);
    }
 
-    public void addMovieToCategory(int movieId, int categoryId)  {
-        try {
-            categoryDao.addMovieToCategory(movieId, categoryId);
-        }catch (SQLException e) {
-            throw new CategoryException("Failed to add movie to category",e);
-        }
+    public void addMovieToCategory(int movieId, int categoryId) throws SQLException {
+        categoryDao.addMovieToCategory(movieId, categoryId);
     }
 
     public List<Movie> getAllMoviesForCategory(int categoryId) {

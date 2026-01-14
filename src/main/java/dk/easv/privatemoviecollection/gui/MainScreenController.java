@@ -44,8 +44,14 @@ public class MainScreenController implements Initializable {
     @FXML private TableColumn<Movie, String> colImdbRating;
     @FXML private TableColumn<Movie, String> colMyRating;
 
+    private ObservableList<Category> categoryObservableList;
+    private ObservableList<Movie> movieObservableList;
+
     private FilteredList<Category> filteredCategories;
     private FilteredList<Movie> filteredMovies;
+
+    private SortedList<Movie> sortedMovies;
+    private SortedList<Category> sortedCategories;
 
     private CategoryManager categoryManager;
     private MovieManager movieManager;
@@ -58,16 +64,22 @@ public class MainScreenController implements Initializable {
         this.filterManager = filterManager;
 
         // 1. changing the lists into observablelists
-        ObservableList<Movie> movieObservableList = FXCollections.observableArrayList(movieManager.getAllMovies());
-        ObservableList<Category> categoryObservableList = FXCollections.observableArrayList(categoryManager.getCategories());
+        movieObservableList = FXCollections.observableArrayList(movieManager.getAllMovies());
+        categoryObservableList = FXCollections.observableArrayList(categoryManager.getCategories());
 
-        // 2. putting the observable lists into filtered lists
+        // 2. putting the observable lists into filtered lists and into sorted lists
         filteredCategories = new FilteredList<>(categoryObservableList);
         filteredMovies = new FilteredList<>(movieObservableList);
 
+        sortedMovies = new SortedList<>(filteredMovies);
+        sortedCategories = new SortedList<>(filteredCategories);
+
+        sortedCategories.comparatorProperty().bind(tblCategories.comparatorProperty());
+        sortedMovies.comparatorProperty().bind(tblMovies.comparatorProperty());
+
         // 3. populating the tables with the filterable lists
-        tblCategories.setItems(filteredCategories);
-        tblMovies.setItems(filteredMovies);
+        tblCategories.setItems(sortedCategories);
+        tblMovies.setItems(sortedMovies);
 
         // 4. listener of the filter
 
@@ -137,7 +149,7 @@ public class MainScreenController implements Initializable {
     }
 
     public void loadMovies() {
-            tblMovies.getItems().setAll(movieManager.getAllMovies());
+        movieObservableList.setAll(movieManager.getAllMovies());
     }
 
     public Category getSelectedCategory() {
@@ -202,6 +214,7 @@ public class MainScreenController implements Initializable {
     }
 
     private void loadMoviesForCategory(int categoryId) {
+        movieObservableList.setAll(categoryManager.getAllMoviesForCategory(categoryId));
         try {
             tblMovies.setItems(FXCollections.observableArrayList(categoryManager.getAllMoviesForCategory(categoryId)));
             }
@@ -212,7 +225,7 @@ public class MainScreenController implements Initializable {
 
     public void showAllMovies(ActionEvent event) {
         try{
-            tblMovies.setItems(FXCollections.observableArrayList(movieManager.getAllMovies()));
+            loadMovies();
         }catch (RuntimeException e) {
             AlertHelper.showAlert(e.getMessage()); }
     }
