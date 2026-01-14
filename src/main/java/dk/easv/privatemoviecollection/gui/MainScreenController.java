@@ -11,6 +11,8 @@ import dk.easv.privatemoviecollection.model.Category;
 import dk.easv.privatemoviecollection.model.Movie;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -115,7 +117,7 @@ public class MainScreenController implements Initializable {
         stage.setResizable(false);
 
         AddEditMovieController controller = fxmlLoader.getController();
-        controller.init(categoryManager, movieManager, this);
+        controller.initAdd(categoryManager, movieManager, this);
         stage.setTitle("Add Movie");
         stage.setScene(scene);
         stage.show();
@@ -165,14 +167,21 @@ public class MainScreenController implements Initializable {
 
 
     public void loadCategories() {
-         {
-        //tblCategories.getItems().clear();
-        try{
-            tblCategories.getItems().setAll(categoryManager.getCategories());
-        }}}
+        tblCategories.setItems(
+                FXCollections.observableArrayList(
+                        categoryManager.getCategories()
+                )
+        );
+    }
 
-    public void loadMovies() {
-        movieObservableList.setAll(movieManager.getAllMovies());
+
+
+    public void loadMovies() throws SQLException {
+        tblMovies.setItems(
+                FXCollections.observableArrayList(
+                        movieManager.getAllMovies()
+                )
+        );
     }
 
     public Category getSelectedCategory() {
@@ -237,7 +246,6 @@ public class MainScreenController implements Initializable {
     }
 
     private void loadMoviesForCategory(int categoryId) {
-        movieObservableList.setAll(categoryManager.getAllMoviesForCategory(categoryId));
         try {
             tblMovies.setItems(FXCollections.observableArrayList(categoryManager.getAllMoviesForCategory(categoryId)));
             }
@@ -261,6 +269,7 @@ public class MainScreenController implements Initializable {
             }
         } catch (MovieException e) {
             AlertHelper.showAlert("Could not run startup checks");
+            e.printStackTrace();
         }
     }
 }
