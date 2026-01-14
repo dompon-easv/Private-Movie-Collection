@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class AddEditMovieController implements Initializable {
+public class AddEditMovieController /*implements Initializable*/ {
 
     @FXML private TextField txtTitle;
     @FXML private TextField txtIMDBRating;
@@ -38,7 +38,7 @@ public class AddEditMovieController implements Initializable {
     private Movie movie;
     private MovieAddEditMode mode;
 
-    public void setMovieList(ObservableList<Movie> movieList) {this.movieList = movieList;}
+    /*public void setMovieList(ObservableList<Movie> movieList) {this.movieList = movieList;}*/
 
     private MovieManager movieManager;
     private CategoryManager categoryManager;
@@ -188,10 +188,10 @@ public class AddEditMovieController implements Initializable {
 
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-       lstAllCategories.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        }
+    //@Override
+    //public void initialize(URL location, ResourceBundle resources) {
+       //lstAllCategories.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+      //  }
 
     private void populateFields() throws SQLException {
         txtTitle.setText(movie.getTitle());
