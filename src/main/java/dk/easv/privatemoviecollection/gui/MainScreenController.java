@@ -212,8 +212,6 @@ public class MainScreenController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        ratingDropdown.setValue(5);
-
         colCategory.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getName()));
 
         colTitle.setCellValueFactory(m -> new SimpleStringProperty(m.getValue().getTitle()));
@@ -231,16 +229,19 @@ public class MainScreenController implements Initializable {
             }
         });
 
-        //listener for filtering
-        txtFilter.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (filterManager != null && filteredCategories != null && filteredMovies != null) {
-                filterManager.filterLists(newValue, filteredCategories, filteredMovies);
-            }
-        });
-
+        //listeners for filtering
+        txtFilter.textProperty().addListener((observable, oldValue, newValue) -> filterAll());
+        ratingDropdown.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> filterAll());
     }
 
+    public void filterAll() {
 
+        String filterText = txtFilter.getText();
+        Integer rating = ratingDropdown.getValue();
+        filterManager.filterLists(filterText, filteredCategories, filteredMovies);
+        filterManager.filterByRating(rating, filteredMovies);
+
+    }
     public void onClickOpenInApp(ActionEvent actionEvent) {
         Movie selectedMovie = tblMovies.getSelectionModel().getSelectedItem();
 
@@ -275,6 +276,7 @@ public class MainScreenController implements Initializable {
     public void showAllMovies(ActionEvent event) {
         try {
             txtFilter.clear();
+            ratingDropdown.getSelectionModel().clearSelection();
             loadMovies();
         } catch (RuntimeException e) {
             AlertHelper.showAlert(e.getMessage());
