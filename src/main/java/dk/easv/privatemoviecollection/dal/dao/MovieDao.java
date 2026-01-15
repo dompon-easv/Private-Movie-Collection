@@ -3,8 +3,6 @@ package dk.easv.privatemoviecollection.dal.dao;
 import dk.easv.privatemoviecollection.dal.ConnectionManager;
 import dk.easv.privatemoviecollection.dal.daoInterface.IMovieDao;
 import dk.easv.privatemoviecollection.model.Movie;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,7 +11,7 @@ import java.util.List;
 public class MovieDao implements IMovieDao {
     private static ConnectionManager db;
 
-    public MovieDao(ConnectionManager db) throws SQLException {
+    public MovieDao(ConnectionManager db) {
         this.db = db;
     }
 
@@ -96,7 +94,6 @@ public class MovieDao implements IMovieDao {
                 stmt.executeUpdate();
             }
         }
-        //this is updating you little fuckers(editing)
 
     public void deleteMovie(int id) {
         String sql = "DELETE FROM movie WHERE id = ?";
@@ -136,10 +133,4 @@ public class MovieDao implements IMovieDao {
         }
         return false;
     }
-
-
-    // adding movies to db
-    // deleting movies from db
-    //editing movies on db
-    //getting movies from db
 }

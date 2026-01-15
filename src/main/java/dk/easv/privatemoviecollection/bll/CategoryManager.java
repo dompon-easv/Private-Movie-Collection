@@ -79,9 +79,4 @@ public class CategoryManager {
     }
 
 
-
-
-    // adding category instance
-    //deleting
-    //getting
 }

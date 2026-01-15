@@ -3,15 +3,11 @@ package dk.easv.privatemoviecollection.gui;
 import dk.easv.privatemoviecollection.bll.CategoryManager;
 import dk.easv.privatemoviecollection.bll.exceptions.CategoryException;
 import dk.easv.privatemoviecollection.gui.helpers.AlertHelper;
-import dk.easv.privatemoviecollection.model.Category;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-
-import java.sql.SQLException;
 
 public class AddCategoryController {
     @FXML

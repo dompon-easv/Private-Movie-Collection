@@ -37,9 +37,12 @@ public class VideoPlayerController {
         mediaView.setMediaPlayer(mediaPlayer);
 
         mediaPlayer.setOnReady(() -> {
+
+                    //takes the size of the video
                     double width = mediaPlayer.getMedia().getWidth();
                     double height = mediaPlayer.getMedia().getHeight();
 
+                    //takes the size of usable part of your screen
                     Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
                     double maxWidth = bounds.getWidth() * 0.9;
                     double maxHeight = bounds.getHeight() * 0.9;
@@ -58,6 +61,8 @@ public class VideoPlayerController {
                     seekSlider.setMax(mediaPlayer.getTotalDuration().toSeconds());
 
                 });
+
+        //the slider will move while the video is playing
         mediaPlayer.currentTimeProperty().addListener((observable, oldValue, newValue) -> {
             seekSlider.setValue(newValue.toSeconds());
         });
@@ -89,5 +94,10 @@ public class VideoPlayerController {
                 btnPlay.setText("Pause");
             }
         }
+    }
+
+    public void stop() {
+        mediaPlayer.stop();
+        mediaPlayer.dispose();
     }
 }

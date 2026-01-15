@@ -14,7 +14,6 @@ import java.util.List;
 public class CategoryDao implements ICategoryDao {
 
     private ConnectionManager db;
-    private Connection connection;
 
     public CategoryDao(ConnectionManager db) throws SQLException {
         this.db = db;
@@ -125,7 +124,6 @@ public class CategoryDao implements ICategoryDao {
 
         return categories;
     }
-// trying to delete categories from movie so that we can /edit/update ,PD trine rules
 
 public void deleteCategoriesForMovie(int movieId) throws SQLException {
 
@@ -153,11 +151,5 @@ public void deleteCategoriesForMovie(int movieId) throws SQLException {
             ps.executeUpdate();
         }
     }
-
-
-    //adding do db
-    //deleting from db
-    //getting from db
-    //deleting movie from category
 
 }
