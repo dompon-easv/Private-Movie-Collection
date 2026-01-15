@@ -134,7 +134,7 @@ public class AddEditMovieController /*implements Initializable*/ {
             if (mode == MovieAddEditMode.ADD) {
                 Movie newMovie = movieManager.addMovie(title, imdbRating, myRating, filePath);
 
-                categoryManager.updateMovieCategories(newMovie.getId()
+                categoryManager.updateMovieCategories(newMovie.getId(),
                         lstChosenCategories.getItems());
 
             } else { // edit
