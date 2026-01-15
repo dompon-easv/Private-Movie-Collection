@@ -92,6 +92,10 @@ public class MainScreenController implements Initializable {
         stage.setTitle("Add Category");
         stage.setScene(scene);
         stage.show();
+        scene.getStylesheets().add(
+                getClass().getResource("/dk/easv/privatemoviecollection/gui/css.css").toExternalForm()
+        );
+
     }
 
     public void onClickDeleteCategory(ActionEvent event) {
@@ -118,6 +122,10 @@ public class MainScreenController implements Initializable {
         stage.setTitle("Add Movie");
         stage.setScene(scene);
         stage.show();
+        scene.getStylesheets().add(
+                getClass().getResource("/dk/easv/privatemoviecollection/gui/css.css").toExternalForm()
+        );
+
     }
 
     public void onClickDeleteMovie(ActionEvent event) {
@@ -154,6 +162,10 @@ public class MainScreenController implements Initializable {
         stage.setTitle("Edit Movie");
         stage.setScene(scene);
         stage.show();
+        scene.getStylesheets().add(
+                getClass().getResource("/dk/easv/privatemoviecollection/gui/css.css").toExternalForm()
+        );
+
     }
 
 
@@ -277,18 +289,24 @@ public class MainScreenController implements Initializable {
         }
 
         if (!movieManager.canOpenMovie(selectedMovie.getFileLink())) {
-            AlertHelper.showAlert("File does not exist as in the path:\n" + selectedMovie.getFileLink());
+            AlertHelper.showAlert(
+                    "File does not exist as in the path:\n" + selectedMovie.getFileLink()
+            );
             return;
         }
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/dk/easv/privatemoviecollection/gui/VideoPlayer.fxml"));
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/dk/easv/privatemoviecollection/gui/VideoPlayer.fxml")
+        );
         Parent root = loader.load();
-
         VideoPlayerController videoPlayerController = loader.getController();
         videoPlayerController.play(selectedMovie.getFileLink());
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(
+                getClass().getResource("/dk/easv/privatemoviecollection/gui/css.css").toExternalForm()
+        );
 
         Stage stage = new Stage();
-        stage.setScene(new Scene(root));
+        stage.setScene(scene);
         stage.setTitle(selectedMovie.getTitle() + " is currently playing");
 
         //stops playing if you close the window
@@ -298,14 +316,13 @@ public class MainScreenController implements Initializable {
         stage.show();
 
         try {
-
             movieManager.updateLastView(selectedMovie.getId());
-
 
         } catch (RuntimeException e) {
             AlertHelper.showAlert("Could not update last view date");
         }
     }
+
 }
 
 

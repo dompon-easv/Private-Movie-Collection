@@ -19,6 +19,7 @@ import java.sql.SQLException;
 
 public class HelloApplication extends Application {
     @Override
+
     public void start(Stage stage) throws IOException, SQLException {
 
         ConnectionManager connectionManager = new ConnectionManager();
@@ -49,5 +50,9 @@ public class HelloApplication extends Application {
         });
 
         stage.show();
+        scene.getStylesheets().add(
+                getClass().getResource("/dk/easv/privatemoviecollection/gui/css.css").toExternalForm()
+        );
+
     }
 }
