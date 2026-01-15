@@ -67,6 +67,21 @@ public class VideoPlayerController {
             seekSlider.setValue(newValue.toSeconds());
         });
 
+
+         /* THIS PART WAS SUPPOSED TO REWIND THE VIDEO WITH A SLIDER BUT IT DOESNT WORK
+
+seekSlider.valueChangingProperty().addListener((obs, wasChanging, isChanging) -> {
+      if (!isChanging) { // released the button
+          if (mediaPlayer.getStatus() == MediaPlayer.Status.STOPPED)
+          {mediaPlayer.play();
+              mediaPlayer.pause();
+
+      }
+          mediaPlayer.seek(Duration.seconds(seekSlider.getValue()));
+  }
+
+  }); */
+
             mediaPlayer.setOnEndOfMedia(() -> {
                 btnPlay.setText("Play");
                 mediaPlayer.stop();
