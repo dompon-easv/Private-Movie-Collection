@@ -13,7 +13,7 @@ import java.util.List;
 public class MovieDao implements IMovieDao {
     private static ConnectionManager db;
 
-    public MovieDao(ConnectionManager db) throws SQLException {
+    public MovieDao(ConnectionManager db) {
         this.db = db;
     }
 
@@ -80,7 +80,8 @@ public class MovieDao implements IMovieDao {
 
 
     @Override
-            public void updateMovie(Movie movie) throws SQLException {String sql = """ 
+            public void updateMovie(Movie movie) throws SQLException {
+        String sql = """ 
         UPDATE movie  SET title = ?, imdbrating = ?, myrating = ?, filelink = ?
         WHERE id = ? """;
 
@@ -96,7 +97,6 @@ public class MovieDao implements IMovieDao {
                 stmt.executeUpdate();
             }
         }
-        //this is updating you little fuckers(editing)
 
     public void deleteMovie(int id) {
         String sql = "DELETE FROM movie WHERE id = ?";

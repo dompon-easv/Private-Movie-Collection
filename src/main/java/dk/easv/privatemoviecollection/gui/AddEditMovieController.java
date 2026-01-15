@@ -2,6 +2,8 @@ package dk.easv.privatemoviecollection.gui;
 
 import dk.easv.privatemoviecollection.bll.CategoryManager;
 import dk.easv.privatemoviecollection.bll.MovieManager;
+import dk.easv.privatemoviecollection.bll.exceptions.CategoryException;
+import dk.easv.privatemoviecollection.bll.exceptions.MovieException;
 import dk.easv.privatemoviecollection.gui.helpers.AlertHelper;
 import dk.easv.privatemoviecollection.model.Category;
 import dk.easv.privatemoviecollection.model.Movie;
@@ -96,7 +98,7 @@ public class AddEditMovieController /*implements Initializable*/ {
         String myRatingText = txtMyRating.getText();
         String filePath = lblFilePath.getText();
 
-        // Validation
+        // Validates required fields and showing alert to user
         List<String> missingFields = new ArrayList<>();
         if (title == null || title.isBlank()) missingFields.add("Title");
         if (imdbText == null || imdbText.isBlank()) missingFields.add("IMDB Rating");
@@ -132,7 +134,7 @@ public class AddEditMovieController /*implements Initializable*/ {
             if (mode == MovieAddEditMode.ADD) {
                 Movie newMovie = movieManager.addMovie(title, imdbRating, myRating, filePath);
 
-                categoryManager.updateMovieCategories(newMovie.getId(),
+                categoryManager.updateMovieCategories(newMovie.getId()
                         lstChosenCategories.getItems());
 
             } else { // edit
@@ -148,7 +150,7 @@ public class AddEditMovieController /*implements Initializable*/ {
                 );
             }
         }
-        catch (IllegalArgumentException e)
+        catch (IllegalArgumentException | MovieException | CategoryException e)
             { AlertHelper.showAlert(e.getMessage()); }
 
         mainScreenController.loadMovies();
@@ -168,7 +170,7 @@ public class AddEditMovieController /*implements Initializable*/ {
         File selectedFile = fc.showOpenDialog(stage);
         if (selectedFile != null) {
             try {
-                // Destinaon folder for project
+                // Destination folder for project
                 String baseFolder = "src/main/resources/Movies/";
                 File targetFolder = new File(baseFolder);
                 if (!targetFolder.exists()) targetFolder.mkdirs(); // create a folder if is missing
@@ -182,8 +184,8 @@ public class AddEditMovieController /*implements Initializable*/ {
                 lblFilePath.setText(relativePath);}
                 else { lblFilePath.setText("Incorrect file format!");}
 
-            }catch (Exception e){
-                e.printStackTrace();
+            }catch (IOException e){
+                AlertHelper.showAlert("Could not copy file");
             }
         }
     }
@@ -194,10 +196,6 @@ public class AddEditMovieController /*implements Initializable*/ {
 
     }
 
-    //@Override
-    //public void initialize(URL location, ResourceBundle resources) {
-       //lstAllCategories.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-      //  }
 
     private void populateFields() throws SQLException {
         txtTitle.setText(movie.getTitle());
@@ -205,7 +203,7 @@ public class AddEditMovieController /*implements Initializable*/ {
         txtMyRating.setText(String.valueOf(movie.getMyRating()));
         lblFilePath.setText(movie.getFileLink());
         List<Category> movieCategories =
-                categoryManager.getCategoriesForMovie(movie.getId()); // maybeworks
+                categoryManager.getCategoriesForMovie(movie.getId()); //
         lstChosenCategories.getItems().setAll(movieCategories);
         lstAllCategories.getItems().removeAll(movieCategories);
     }
@@ -220,11 +218,13 @@ public class AddEditMovieController /*implements Initializable*/ {
         this.mainScreenController = mainScreenController;
         this.movie = movie;
         this.mode = MovieAddEditMode.EDIT;
-       loadCategories();
-        populateFields();
+        try {
+            loadCategories();
+            populateFields();
+        }catch (CategoryException | MovieException e) {
+            AlertHelper.showAlert(e.getMessage());
+        }
         setupCategoryDoubleClick();
-
     }
-
 
 }
