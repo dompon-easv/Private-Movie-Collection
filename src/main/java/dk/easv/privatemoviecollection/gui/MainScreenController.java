@@ -52,6 +52,8 @@ public class MainScreenController implements Initializable {
     private TableColumn<Movie, String> colImdbRating;
     @FXML
     private TableColumn<Movie, String> colMyRating;
+    @FXML
+    private ChoiceBox<Integer> ratingDropdown;
 
     private ObservableList<Category> categoryObservableList;
     private ObservableList<Movie> movieObservableList;
@@ -209,6 +211,9 @@ public class MainScreenController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        ratingDropdown.setValue(5);
+
         colCategory.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getName()));
 
         colTitle.setCellValueFactory(m -> new SimpleStringProperty(m.getValue().getTitle()));
