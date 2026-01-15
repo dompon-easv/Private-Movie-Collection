@@ -70,6 +70,7 @@
                         <TextField fx:id="txtFilter" layoutX="14.0" layoutY="8.0" prefHeight="26.0" prefWidth="156.0" />
                         <Button layoutX="14.0" layoutY="254.0" mnemonicParsing="false" onAction="#onClickOpenInApp" prefHeight="26.0" prefWidth="156.0" text="Open in App" />
                         <Button layoutX="14.0" layoutY="432.0" mnemonicParsing="false" onAction="#showAllMovies" text="Show all" />
+                        <Button layoutX="14.0" layoutY="291.0" mnemonicParsing="false" onAction="#onClickPlay" prefHeight="26.0" prefWidth="156.0" text="Play " />
                      </children>
                   </AnchorPane>
                </children>

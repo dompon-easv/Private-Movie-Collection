@@ -3,8 +3,15 @@ package dk.easv.privatemoviecollection.bll;
 import dk.easv.privatemoviecollection.bll.exceptions.MovieException;
 import dk.easv.privatemoviecollection.dal.dao.MovieDao;
 import dk.easv.privatemoviecollection.dal.daoInterface.IMovieDao;
+import dk.easv.privatemoviecollection.gui.helpers.AlertHelper;
 import dk.easv.privatemoviecollection.model.Movie;
 import javafx.collections.ObservableList;
+import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.sql.SQLException;
@@ -100,7 +107,12 @@ public class MovieManager {
             throw new MovieException("Failed to check if file exists", e);
         }
     }
+
+    public void OpenInApp(String filePath) {
+
+    }
 }
+
 
 
     // preventing adding another movie with the same path?

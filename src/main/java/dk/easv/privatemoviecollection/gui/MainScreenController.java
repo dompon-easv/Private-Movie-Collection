@@ -18,9 +18,15 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.StackPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 
 import java.awt.*;
@@ -32,13 +38,20 @@ import java.util.ResourceBundle;
 
 public class MainScreenController implements Initializable {
 
-    @FXML private TableView<Category> tblCategories;
-    @FXML private TableView<Movie> tblMovies;
-    @FXML private TextField txtFilter;
-    @FXML private TableColumn<Category, String> colCategory;
-    @FXML private TableColumn<Movie, String> colTitle;
-    @FXML private TableColumn<Movie, String> colImdbRating;
-    @FXML private TableColumn<Movie, String> colMyRating;
+    @FXML
+    private TableView<Category> tblCategories;
+    @FXML
+    private TableView<Movie> tblMovies;
+    @FXML
+    private TextField txtFilter;
+    @FXML
+    private TableColumn<Category, String> colCategory;
+    @FXML
+    private TableColumn<Movie, String> colTitle;
+    @FXML
+    private TableColumn<Movie, String> colImdbRating;
+    @FXML
+    private TableColumn<Movie, String> colMyRating;
 
     private ObservableList<Category> categoryObservableList;
     private ObservableList<Movie> movieObservableList;
@@ -90,7 +103,7 @@ public class MainScreenController implements Initializable {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/dk/easv/privatemoviecollection/gui/AddCategory.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setResizable(false);
-        
+
         AddCategoryController controller = fxmlLoader.getController();
         controller.init(categoryManager, this);
         stage.setTitle("Add Category");
@@ -100,16 +113,15 @@ public class MainScreenController implements Initializable {
 
     public void onClickDeleteCategory(ActionEvent event) {
         Category selected = getSelectedCategory();
-        if(selected!= null) {
+        if (selected != null) {
             try {
                 categoryManager.deleteCategory(selected.getId());
                 loadCategories();
                 loadMovies();
-            }catch (CategoryException e){
+            } catch (CategoryException e) {
                 AlertHelper.showAlert(e.getMessage());
             }
-        }
-        else AlertHelper.showAlert("Please select a category");
+        } else AlertHelper.showAlert("Please select a category");
     }
 
     public void onClickAddMovie(ActionEvent event) throws IOException {
@@ -125,30 +137,33 @@ public class MainScreenController implements Initializable {
         stage.show();
     }
 
-    public void onClickDeleteMovie(ActionEvent event)  {
+    public void onClickDeleteMovie(ActionEvent event) {
         Movie selected = getSelectedMovie();
-        if(selected != null) {
-            try{
-            movieManager.deleteMovie(selected.getId());
-           loadMovies();
-            }catch (MovieException e){
+        if (selected != null) {
+            try {
+                movieManager.deleteMovie(selected.getId());
+                loadMovies();
+            } catch (MovieException e) {
                 AlertHelper.showAlert(e.getMessage());
             }
-        }else AlertHelper.showAlert("Please select a movie");
+        } else AlertHelper.showAlert("Please select a movie");
     }
 
 
-    public void onClickEditMovie(ActionEvent event)  throws IOException, SQLException {
+    public void onClickEditMovie(ActionEvent event) throws IOException, SQLException {
 
         Movie selectedMovie = getSelectedMovie();
 
-        if (selectedMovie == null) {Alert alert = new Alert(Alert.AlertType.WARNING,
-                    "Please select a movie to edit"); alert.showAndWait();
+        if (selectedMovie == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING,
+                    "Please select a movie to edit");
+            alert.showAndWait();
             return;
         }
 
-        Stage stage = new Stage(); FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource(
-                "/dk/easv/privatemoviecollection/gui/AddEditMovie.fxml") );
+        Stage stage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource(
+                "/dk/easv/privatemoviecollection/gui/AddEditMovie.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setResizable(false);
         AddEditMovieController controller = fxmlLoader.getController();
@@ -167,7 +182,6 @@ public class MainScreenController implements Initializable {
     }
 
 
-
     public void loadCategories() {
         try {
             categoryObservableList.setAll(categoryManager.getCategories());
@@ -177,11 +191,10 @@ public class MainScreenController implements Initializable {
     }
 
 
-
-    public void loadMovies()  {
-        try{
+    public void loadMovies() {
+        try {
             movieObservableList.setAll(movieManager.getAllMovies());
-        }catch (MovieException e){
+        } catch (MovieException e) {
             AlertHelper.showAlert(e.getMessage());
         }
     }
@@ -190,14 +203,13 @@ public class MainScreenController implements Initializable {
         return tblCategories.getSelectionModel().getSelectedItem();
     }
 
-    public Movie getSelectedMovie()
-    {
+    public Movie getSelectedMovie() {
         return tblMovies.getSelectionModel().getSelectedItem();
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        colCategory.setCellValueFactory( c -> new SimpleStringProperty(c.getValue().getName()));
+        colCategory.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getName()));
 
         colTitle.setCellValueFactory(m -> new SimpleStringProperty(m.getValue().getTitle()));
         colImdbRating.setCellValueFactory(m -> {
@@ -209,14 +221,14 @@ public class MainScreenController implements Initializable {
 
         //added so that movies are display once a category is clicked
         tblCategories.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue != null) {
+            if (newValue != null) {
                 loadMoviesForCategory(newValue.getId());
             }
         });
 
         //listener for filtering
         txtFilter.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(filterManager!=null && filteredCategories != null && filteredMovies != null) {
+            if (filterManager != null && filteredCategories != null && filteredMovies != null) {
                 filterManager.filterLists(newValue, filteredCategories, filteredMovies);
             }
         });
@@ -227,12 +239,12 @@ public class MainScreenController implements Initializable {
     public void onClickOpenInApp(ActionEvent actionEvent) {
         Movie selectedMovie = tblMovies.getSelectionModel().getSelectedItem();
 
-        if(selectedMovie == null) {
+        if (selectedMovie == null) {
             AlertHelper.showAlert("Select a movie to open");
             return;
         }
 
-        if(!movieManager.canOpenMovie(selectedMovie.getFileLink())){
+        if (!movieManager.canOpenMovie(selectedMovie.getFileLink())) {
             AlertHelper.showAlert("File does not exist as in the path:\n" + selectedMovie.getFileLink());
             return;
         }
@@ -240,7 +252,7 @@ public class MainScreenController implements Initializable {
         try {
             movieManager.updateLastView(selectedMovie.getId());
             Desktop.getDesktop().open(new File(selectedMovie.getFileLink()));
-        } catch (IOException e){
+        } catch (IOException e) {
             AlertHelper.showAlert("Could not open the movie");
         } catch (RuntimeException e) {
             AlertHelper.showAlert("Could not update last view date");
@@ -250,21 +262,21 @@ public class MainScreenController implements Initializable {
     private void loadMoviesForCategory(int categoryId) {
         try {
             movieObservableList.setAll(categoryManager.getAllMoviesForCategory(categoryId));
-            }
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             AlertHelper.showAlert("Could not load movies for the selected category");
         }
     }
 
     public void showAllMovies(ActionEvent event) {
-        try{
+        try {
             txtFilter.clear();
             loadMovies();
-        }catch (RuntimeException e) {
-            AlertHelper.showAlert(e.getMessage()); }
+        } catch (RuntimeException e) {
+            AlertHelper.showAlert(e.getMessage());
+        }
     }
 
-    public void runStartupChecks()  {
+    public void runStartupChecks() {
         try {
             if (movieManager.shouldWarnAboutOldAndLowRatedMovies()) {
                 AlertHelper.showAlert("You have movies with a personal rating under 6\n" +
@@ -275,4 +287,41 @@ public class MainScreenController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    public void onClickPlay(ActionEvent event) throws IOException {
+        Movie selectedMovie = tblMovies.getSelectionModel().getSelectedItem();
+
+        if (selectedMovie == null) {
+            AlertHelper.showAlert("Select a movie to open");
+            return;
+        }
+
+        if (!movieManager.canOpenMovie(selectedMovie.getFileLink())) {
+            AlertHelper.showAlert("File does not exist as in the path:\n" + selectedMovie.getFileLink());
+            return;
+        }
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/dk/easv/privatemoviecollection/gui/VideoPlayer.fxml"));
+        Parent root = loader.load();
+
+        VideoPlayerController videoPlayerController = loader.getController();
+        videoPlayerController.play(selectedMovie.getFileLink());
+
+        Stage stage = new Stage();
+        stage.setScene(new Scene(root));
+        stage.setTitle(selectedMovie.getTitle() + " is currently playing");
+        stage.show();
+
+        try {
+
+            movieManager.updateLastView(selectedMovie.getId());
+
+
+        } catch (RuntimeException e) {
+            AlertHelper.showAlert("Could not update last view date");
+        }
+    }
 }
+
+
+
