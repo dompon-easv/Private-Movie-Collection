@@ -130,8 +130,10 @@ public class AddEditMovieController  {
             if (mode == MovieAddEditMode.ADD) {
                 Movie newMovie = movieManager.addMovie(title, imdbRating, myRating, filePath);
 
-                categoryManager.updateMovieCategories(newMovie.getId(),
-                        lstChosenCategories.getItems());
+                // Add each chosen category we create the relationship to DB
+                for (Category category : lstChosenCategories.getItems()) {
+                    categoryManager.addMovieToCategory(newMovie.getId(), category.getId());
+                }
 
             } else { // edit
 

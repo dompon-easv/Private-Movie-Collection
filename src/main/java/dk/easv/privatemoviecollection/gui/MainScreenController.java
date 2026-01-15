@@ -159,7 +159,7 @@ public class MainScreenController implements Initializable {
         stage.setResizable(false);
         AddEditMovieController controller = fxmlLoader.getController();
 
-        // EDIT MODE -on progress XD
+        // EDIT MODE
         controller.initEdit(
                 categoryManager,
                 movieManager,

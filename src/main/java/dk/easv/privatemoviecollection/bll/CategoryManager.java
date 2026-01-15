@@ -65,18 +65,16 @@ public class CategoryManager {
         }catch (SQLException e) {
             throw new CategoryException("Failed to get all movies for category",e);
         }
-   }
+    }
+
     public List<Category> getCategoriesForMovie(int movieId) throws SQLException {
         return categoryDao.getCategoriesForMovie(movieId);
     }
-    public void updateMovieCategories(int movieId,
-                                      List<Category> categories)
-            throws SQLException { categoryDao.deleteCategoriesForMovie(movieId);
 
-        for (Category category : categories) {
-            categoryDao.addCategoryToMovie(movieId, category.getId());
-        }
+    public void updateMovieCategories(int movieId, List<Category> categories) throws SQLException {
+        List<Integer> categoryIds = categories.stream()
+                .map(Category::getId)
+                .toList();
+        categoryDao.updateCategoriesForMovie(movieId, categoryIds);
     }
-
-
 }
