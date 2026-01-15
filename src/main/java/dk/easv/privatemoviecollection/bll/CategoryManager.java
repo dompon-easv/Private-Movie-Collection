@@ -38,8 +38,7 @@ public class CategoryManager {
         try {
             return categoryDao.getAllCategories();
         }catch (SQLException e) {
-            e.printStackTrace();
-            return List.of();
+            throw new CategoryException("Could not get categories", e);
         }
     }
 
@@ -67,14 +66,22 @@ public class CategoryManager {
         }
     }
 
-    public List<Category> getCategoriesForMovie(int movieId) throws SQLException {
-        return categoryDao.getCategoriesForMovie(movieId);
+    public List<Category> getCategoriesForMovie(int movieId)  {
+        try {
+            return categoryDao.getCategoriesForMovie(movieId);
+        }catch (SQLException e) {
+            throw new CategoryException("Failed to get all movies for category",e);
+        }
     }
 
-    public void updateMovieCategories(int movieId, List<Category> categories) throws SQLException {
+    public void updateMovieCategories(int movieId, List<Category> categories) {
         List<Integer> categoryIds = categories.stream()
                 .map(Category::getId)
                 .toList();
-        categoryDao.updateCategoriesForMovie(movieId, categoryIds);
+        try {
+            categoryDao.updateCategoriesForMovie(movieId, categoryIds);
+        }catch (SQLException e) {
+            throw new CategoryException("Cannot update categories in movie",e);
+        }
     }
 }

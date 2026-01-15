@@ -28,7 +28,6 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class MainScreenController implements Initializable {
@@ -139,10 +138,7 @@ public class MainScreenController implements Initializable {
         Movie selectedMovie = getSelectedMovie();
 
         if (selectedMovie == null) {
-            Alert alert = new Alert(Alert.AlertType.WARNING,
-                    "Please select a movie to edit");
-            alert.showAndWait();
-            return;
+            AlertHelper.showAlert("Please select a movie");
         }
 
         Stage stage = new Stage();

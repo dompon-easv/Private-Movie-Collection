@@ -10,8 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 public class AddCategoryController {
-    @FXML
-    private TextField txtNewCategory;
+    @FXML private TextField txtNewCategory;
 
     private CategoryManager categoryManager;
     private MainScreenController mainScreenController;

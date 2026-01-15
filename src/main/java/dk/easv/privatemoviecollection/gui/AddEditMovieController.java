@@ -86,7 +86,7 @@ public class AddEditMovieController  {
         stage.close();
     }
 
-    public void onClickSave(ActionEvent event) throws SQLException {
+    public void onClickSave(ActionEvent event) {
 
 
         String title = txtTitle.getText();
