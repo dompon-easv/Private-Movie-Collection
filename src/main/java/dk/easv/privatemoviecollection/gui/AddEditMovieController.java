@@ -33,7 +33,6 @@ public class AddEditMovieController  {
     @FXML private ListView<Category> lstChosenCategories;
     @FXML private Label lblFilePath;
 
-    private ObservableList<Movie> movieList = FXCollections.observableArrayList();
     private Movie movie;
     private MovieAddEditMode mode;
 
@@ -153,9 +152,13 @@ public class AddEditMovieController  {
 
         mainScreenController.loadMovies();
 
-        Stage stage = (Stage) ((Node) event.getSource())
-                .getScene().getWindow();
-        stage.close();
+        //after adding movie clear all Fields
+        lblFilePath.setText(null);
+        txtTitle.clear();
+        txtIMDBRating.clear();
+        txtMyRating.clear();
+        lstAllCategories.getSelectionModel().clearSelection();
+        lstChosenCategories.getItems().clear();
     }
 
 

@@ -207,14 +207,7 @@ public class MainScreenController implements Initializable {
         ratingDropdown.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> filterAll());
     }
 
-    public void filterAll() {
 
-        String filterText = txtFilter.getText();
-        Integer rating = ratingDropdown.getValue();
-        filterManager.filterLists(filterText, filteredCategories, filteredMovies);
-        filterManager.filterByRating(rating, filteredMovies);
-
-    }
     public void onClickOpenInApp(ActionEvent actionEvent) {
         Movie selectedMovie = tblMovies.getSelectionModel().getSelectedItem();
 
@@ -260,7 +253,7 @@ public class MainScreenController implements Initializable {
         try {
             if (movieManager.shouldWarnAboutOldAndLowRatedMovies()) {
                 AlertHelper.showAlert("You have movies with a personal rating under 6\n" +
-                        "that have not been opened in more than 2 years.");
+                        "that have not been opened in more than 2 years or never opened.");
             }
         } catch (MovieException e) {
             AlertHelper.showAlert("Could not run startup checks");
@@ -305,6 +298,14 @@ public class MainScreenController implements Initializable {
         } catch (RuntimeException e) {
             AlertHelper.showAlert("Could not update last view date");
         }
+
+    }   public void filterAll() {
+
+        String filterText = txtFilter.getText();
+        Integer rating = ratingDropdown.getValue();
+        filterManager.filterLists(filterText, filteredCategories, filteredMovies);
+        filterManager.filterByRating(rating, filteredMovies);
+
     }
 }
 

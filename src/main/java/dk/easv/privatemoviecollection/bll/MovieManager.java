@@ -87,6 +87,7 @@ public class MovieManager {
     }
 
     public boolean shouldWarnAboutOldAndLowRatedMovies() {
+        System.out.println("Trying to warn about old and low rated movies");
         try {
             return movieDao.isOldAndHasLowRating();
         } catch (SQLException e) {
