@@ -78,7 +78,8 @@ public class MovieDao implements IMovieDao {
 
 
     @Override
-            public void updateMovie(Movie movie) throws SQLException {String sql = """ 
+            public void updateMovie(Movie movie) throws SQLException {
+        String sql = """ 
         UPDATE movie  SET title = ?, imdbrating = ?, myrating = ?, filelink = ?
         WHERE id = ? """;
 
