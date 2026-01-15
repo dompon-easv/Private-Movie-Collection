@@ -197,13 +197,14 @@ public class AddEditMovieController /*implements Initializable*/ {
     }
 
 
-    private void populateFields() throws SQLException {
+    private void populateFields()  {
         txtTitle.setText(movie.getTitle());
         txtIMDBRating.setText(String.valueOf(movie.getImdbRating()));
         txtMyRating.setText(String.valueOf(movie.getMyRating()));
         lblFilePath.setText(movie.getFileLink());
-        List<Category> movieCategories =
-                categoryManager.getCategoriesForMovie(movie.getId()); //
+
+            List<Category> movieCategories =
+                    categoryManager.getCategoriesForMovie(movie.getId());
         lstChosenCategories.getItems().setAll(movieCategories);
         lstAllCategories.getItems().removeAll(movieCategories);
     }
@@ -211,7 +212,7 @@ public class AddEditMovieController /*implements Initializable*/ {
 
 
     public void initEdit(CategoryManager categoryManager, MovieManager movieManager, MainScreenController mainScreenController,
-                         Movie movie) throws SQLException {
+                         Movie movie) {
 
         this.categoryManager = categoryManager;
         this.movieManager = movieManager;

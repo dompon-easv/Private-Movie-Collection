@@ -25,8 +25,8 @@ public class Category {
         return name;
     }
 
-    //this litte shit avoid duplicates in categories while adding movie,
-    // if id match they represent the same category
+    /* Avoid duplicates in categories while adding movie,
+    if id match they represent the same category */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

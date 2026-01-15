@@ -38,22 +38,14 @@ import java.util.ResourceBundle;
 
 public class MainScreenController implements Initializable {
 
-    @FXML
-    private TableView<Category> tblCategories;
-    @FXML
-    private TableView<Movie> tblMovies;
-    @FXML
-    private TextField txtFilter;
-    @FXML
-    private TableColumn<Category, String> colCategory;
-    @FXML
-    private TableColumn<Movie, String> colTitle;
-    @FXML
-    private TableColumn<Movie, String> colImdbRating;
-    @FXML
-    private TableColumn<Movie, String> colMyRating;
-    @FXML
-    private ChoiceBox<Integer> ratingDropdown;
+    @FXML private TableView<Category> tblCategories;
+    @FXML private TableView<Movie> tblMovies;
+    @FXML private TextField txtFilter;
+    @FXML private TableColumn<Category, String> colCategory;
+    @FXML private TableColumn<Movie, String> colTitle;
+    @FXML private TableColumn<Movie, String> colImdbRating;
+    @FXML private TableColumn<Movie, String> colMyRating;
+    @FXML private ChoiceBox<Integer> ratingDropdown;
 
     private ObservableList<Category> categoryObservableList;
     private ObservableList<Movie> movieObservableList;
@@ -69,7 +61,7 @@ public class MainScreenController implements Initializable {
     private FilterManager filterManager;
 
 
-    public void init(CategoryManager categoryManager, MovieManager movieManager, FilterManager filterManager) throws SQLException {
+    public void init(CategoryManager categoryManager, MovieManager movieManager, FilterManager filterManager) {
         this.categoryManager = categoryManager;
         this.movieManager = movieManager;
         this.filterManager = filterManager;
@@ -126,7 +118,7 @@ public class MainScreenController implements Initializable {
         } else AlertHelper.showAlert("Please select a category");
     }
 
-    public void onClickAddMovie(ActionEvent event) throws IOException {
+    public void onClickAddMovie(ActionEvent event) throws IOException {         //there might be catch/try for IOException
         Stage stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/dk/easv/privatemoviecollection/gui/AddEditMovie.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
@@ -152,7 +144,7 @@ public class MainScreenController implements Initializable {
     }
 
 
-    public void onClickEditMovie(ActionEvent event) throws IOException, SQLException {
+    public void onClickEditMovie(ActionEvent event) throws IOException {
 
         Movie selectedMovie = getSelectedMovie();
 
@@ -171,12 +163,7 @@ public class MainScreenController implements Initializable {
         AddEditMovieController controller = fxmlLoader.getController();
 
         // EDIT MODE -on progress XD
-        controller.initEdit(
-                categoryManager,
-                movieManager,
-                this,
-                selectedMovie
-        );
+        controller.initEdit(categoryManager, movieManager, this, selectedMovie);
 
         stage.setTitle("Edit Movie");
         stage.setScene(scene);
