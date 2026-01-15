@@ -14,6 +14,5 @@ public interface ICategoryDao {
     void deleteCategory(int id) throws SQLException;
     void addMovieToCategory(int movieId, int categoryId) throws SQLException;
     List<Category> getCategoriesForMovie(int movieId) throws SQLException;
-    void deleteCategoriesForMovie(int movieId) throws SQLException;
-    void addCategoryToMovie(int movieId, int categoryId) throws SQLException;
+    void updateCategoriesForMovie(int movieId, List<Integer> categoryIds) throws SQLException;
 }

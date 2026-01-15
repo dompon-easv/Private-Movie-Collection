@@ -7,12 +7,8 @@ module dk.easv.privatemoviecollection {
     requires com.microsoft.sqlserver.jdbc;
     requires java.naming;
     requires java.desktop;
-    //requires dk.easv.privatemoviecollection;
     requires javafx.base;
     requires javafx.media;
-    //requires dk.easv.privatemoviecollection;
-    // requires dk.easv.privatemoviecollection;
-    // requires dk.easv.privatemoviecollection;
 
 
     opens dk.easv.privatemoviecollection.gui to javafx.fxml;

@@ -11,7 +11,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
@@ -19,15 +18,13 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
-public class AddEditMovieController /*implements Initializable*/ {
+public class AddEditMovieController  {
 
     @FXML private TextField txtTitle;
     @FXML private TextField txtIMDBRating;
@@ -40,7 +37,6 @@ public class AddEditMovieController /*implements Initializable*/ {
     private Movie movie;
     private MovieAddEditMode mode;
 
-    /*public void setMovieList(ObservableList<Movie> movieList) {this.movieList = movieList;}*/
 
     private MovieManager movieManager;
     private CategoryManager categoryManager;
@@ -48,7 +44,7 @@ public class AddEditMovieController /*implements Initializable*/ {
 
     public void initAdd(CategoryManager categoryManager,
                         MovieManager movieManager,
-                        MainScreenController mainScreenController) throws IOException {
+                        MainScreenController mainScreenController) {
         this.categoryManager = categoryManager;
         this.movieManager = movieManager;
         this.mainScreenController = mainScreenController;
@@ -134,8 +130,10 @@ public class AddEditMovieController /*implements Initializable*/ {
             if (mode == MovieAddEditMode.ADD) {
                 Movie newMovie = movieManager.addMovie(title, imdbRating, myRating, filePath);
 
-                categoryManager.updateMovieCategories(newMovie.getId(),
-                        lstChosenCategories.getItems());
+                // Add each chosen category we create the relationship to DB
+                for (Category category : lstChosenCategories.getItems()) {
+                    categoryManager.addMovieToCategory(newMovie.getId(), category.getId());
+                }
 
             } else { // edit
 

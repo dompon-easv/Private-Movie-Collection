@@ -122,42 +122,31 @@ public class CategoryDao implements ICategoryDao {
                 }
             }
         }
-
         return categories;
     }
 // trying to delete categories from movie so that we can /edit/update ,PD trine rules
 
-public void deleteCategoriesForMovie(int movieId) throws SQLException {
+    public void updateCategoriesForMovie(int movieId, List<Integer> categoryIds) throws SQLException {
 
-    String sql = "DELETE FROM CatMovie WHERE MovieId = ?";
+        // Step 1: Delete existing category associations
+        String deleteSql = "DELETE FROM CatMovie WHERE MovieId = ?";
+        try (Connection con = db.getConnection();
+             PreparedStatement deleteStmt = con.prepareStatement(deleteSql)) {
+            deleteStmt.setInt(1, movieId);
+            deleteStmt.executeUpdate();
+        }
 
-    try (Connection con = ConnectionManager.getConnection();
-         PreparedStatement ps = con.prepareStatement(sql)) {
+        // Step 2: Insert new associations
+        String insertSql = "INSERT INTO CatMovie (MovieId, CategoryId) VALUES (?, ?)";
+        try (Connection con = db.getConnection();
+             PreparedStatement insertStmt = con.prepareStatement(insertSql)) {
 
-        ps.setInt(1, movieId);
-        ps.executeUpdate();
-    }
-}
-    public void addCategoryToMovie(int movieId, int categoryId) throws SQLException {
-
-        String sql = """
-        INSERT INTO CatMovie (MovieId, CategoryId)
-        VALUES (?, ?)
-    """;
-
-        try (Connection con = ConnectionManager.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setInt(1, movieId);
-            ps.setInt(2, categoryId);
-            ps.executeUpdate();
+            for (Integer categoryId : categoryIds) {
+                insertStmt.setInt(1, movieId);
+                insertStmt.setInt(2, categoryId);
+                insertStmt.addBatch();
+            }
+            insertStmt.executeBatch();
         }
     }
-
-
-    //adding do db
-    //deleting from db
-    //getting from db
-    //deleting movie from category
-
 }

@@ -3,8 +3,6 @@ package dk.easv.privatemoviecollection.dal.dao;
 import dk.easv.privatemoviecollection.dal.ConnectionManager;
 import dk.easv.privatemoviecollection.dal.daoInterface.IMovieDao;
 import dk.easv.privatemoviecollection.model.Movie;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -136,10 +134,4 @@ public class MovieDao implements IMovieDao {
         }
         return false;
     }
-
-
-    // adding movies to db
-    // deleting movies from db
-    //editing movies on db
-    //getting movies from db
 }

@@ -1,7 +1,6 @@
 package dk.easv.privatemoviecollection.dal.daoInterface;
 
 import dk.easv.privatemoviecollection.model.Movie;
-import javafx.collections.ObservableList;
 
 import java.sql.SQLException;
 import java.util.List;

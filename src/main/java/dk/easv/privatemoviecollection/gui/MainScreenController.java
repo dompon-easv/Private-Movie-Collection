@@ -22,11 +22,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.StackPane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 
 import java.awt.*;
@@ -70,7 +65,7 @@ public class MainScreenController implements Initializable {
         movieObservableList = FXCollections.observableArrayList(movieManager.getAllMovies());
         categoryObservableList = FXCollections.observableArrayList(categoryManager.getCategories());
 
-        // 2. putting the observable lists into filtered lists
+        // 2. putting the observable lists into filtered listsvand sorted lists
         filteredCategories = new FilteredList<>(categoryObservableList, c -> true);
         filteredMovies = new FilteredList<>(movieObservableList, m -> true);
 
@@ -80,16 +75,11 @@ public class MainScreenController implements Initializable {
         sortedCategories.comparatorProperty().bind(tblCategories.comparatorProperty());
         sortedMovies.comparatorProperty().bind(tblMovies.comparatorProperty());
 
-        // 3. populating the tables with the filterable lists
+        // 3. populating the tables with the sorted lists
         tblCategories.setItems(sortedCategories);
         tblMovies.setItems(sortedMovies);
+        }
 
-        // 4. listener of the filter
-
-        txtFilter.textProperty().addListener((observable, oldValue, newValue) -> {
-            filterManager.filterLists(newValue, filteredCategories, filteredMovies);
-        });
-    }
 
 
     public void onClickNewCategory(ActionEvent event) throws IOException {
@@ -162,7 +152,7 @@ public class MainScreenController implements Initializable {
         stage.setResizable(false);
         AddEditMovieController controller = fxmlLoader.getController();
 
-        // EDIT MODE -on progress XD
+        // EDIT MODE
         controller.initEdit(categoryManager, movieManager, this, selectedMovie);
 
         stage.setTitle("Edit Movie");
@@ -304,6 +294,11 @@ public class MainScreenController implements Initializable {
         Stage stage = new Stage();
         stage.setScene(new Scene(root));
         stage.setTitle(selectedMovie.getTitle() + " is currently playing");
+
+        //stops playing if you close the window
+        stage.setOnCloseRequest(e -> {videoPlayerController.stop();
+        });
+
         stage.show();
 
         try {
