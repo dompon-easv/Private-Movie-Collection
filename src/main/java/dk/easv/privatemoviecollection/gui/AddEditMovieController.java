@@ -7,20 +7,16 @@ import dk.easv.privatemoviecollection.bll.exceptions.MovieException;
 import dk.easv.privatemoviecollection.gui.helpers.AlertHelper;
 import dk.easv.privatemoviecollection.model.Category;
 import dk.easv.privatemoviecollection.model.Movie;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,11 +48,28 @@ public class AddEditMovieController  {
         loadCategories();
         setupCategoryDoubleClick();
     }
+    //it updates
+    public void initEdit(CategoryManager categoryManager, MovieManager movieManager, MainScreenController mainScreenController,
+                         Movie movie) {
+
+        this.categoryManager = categoryManager;
+        this.movieManager = movieManager;
+        this.mainScreenController = mainScreenController;
+        this.movie = movie;
+        this.mode = MovieAddEditMode.EDIT;
+        try {
+            loadCategories();
+            populateFields();
+        }catch (CategoryException | MovieException e) {
+            AlertHelper.showAlert(e.getMessage());
+        }
+        setupCategoryDoubleClick();
+    }
 
 
     private void setupCategoryDoubleClick() {
 
-        // Double-click in ALL → move to CHOSEN
+        // Double click in ALL → move to CHOSEN
         lstAllCategories.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 Category selected = lstAllCategories.getSelectionModel().getSelectedItem();
@@ -67,7 +80,7 @@ public class AddEditMovieController  {
             }
         });
 
-        // Double-click in CHOSEN → move back to ALL
+        // Double click in CHOSEN → move back to ALL
         lstChosenCategories.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 Category selected = lstChosenCategories.getSelectionModel().getSelectedItem();
@@ -215,21 +228,6 @@ public class AddEditMovieController  {
 
 
 
-    public void initEdit(CategoryManager categoryManager, MovieManager movieManager, MainScreenController mainScreenController,
-                         Movie movie) {
 
-        this.categoryManager = categoryManager;
-        this.movieManager = movieManager;
-        this.mainScreenController = mainScreenController;
-        this.movie = movie;
-        this.mode = MovieAddEditMode.EDIT;
-        try {
-            loadCategories();
-            populateFields();
-        }catch (CategoryException | MovieException e) {
-            AlertHelper.showAlert(e.getMessage());
-        }
-        setupCategoryDoubleClick();
-    }
 
 }
