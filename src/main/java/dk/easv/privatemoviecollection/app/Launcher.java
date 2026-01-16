@@ -1,4 +1,4 @@
-package dk.easv.privatemoviecollection;
+package dk.easv.privatemoviecollection.app;
 
 import javafx.application.Application;
 

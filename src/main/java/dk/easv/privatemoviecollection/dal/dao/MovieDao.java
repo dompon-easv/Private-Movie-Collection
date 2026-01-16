@@ -20,7 +20,7 @@ public class MovieDao implements IMovieDao {
         String sql = """
                 SELECT COUNT(*)
                 FROM movie
-                WHERE myrating < 6
+                WHERE myrating <= 6
                 AND (lastview IS NULL 
                     OR lastview < DATEADD(YEAR, -2, GETDATE()))
                 """;

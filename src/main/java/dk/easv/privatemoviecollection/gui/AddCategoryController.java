@@ -21,12 +21,6 @@ public class AddCategoryController {
     }
 
     @FXML
-    public void onClickCancel(ActionEvent event) {
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.close();
-    }
-
-    @FXML
     public void onClickAddCategory(ActionEvent event) {
         String category = txtNewCategory.getText();
         if (category.isEmpty()) {
@@ -44,5 +38,10 @@ public class AddCategoryController {
                 AlertHelper.showAlert(e.getMessage());
             }
         }
+    }
+    @FXML
+    public void onClickCancel(ActionEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.close();
     }
 }
