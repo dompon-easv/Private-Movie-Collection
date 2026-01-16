@@ -1,6 +1,6 @@
 package dk.easv.privatemoviecollection.gui;
 
-import dk.easv.privatemoviecollection.HelloApplication;
+import dk.easv.privatemoviecollection.app.HelloApplication;
 import dk.easv.privatemoviecollection.bll.CategoryManager;
 import dk.easv.privatemoviecollection.bll.FilterManager;
 import dk.easv.privatemoviecollection.bll.MovieManager;

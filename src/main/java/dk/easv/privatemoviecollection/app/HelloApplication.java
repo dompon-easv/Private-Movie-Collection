@@ -1,4 +1,4 @@
-package dk.easv.privatemoviecollection;
+package dk.easv.privatemoviecollection.app;
 
 import dk.easv.privatemoviecollection.bll.CategoryManager;
 import dk.easv.privatemoviecollection.bll.FilterManager;
@@ -38,7 +38,9 @@ public class HelloApplication extends Application {
         controller.init(categoryManager, movieManager, filterManager);
         stage.setTitle("Movie Collection");
         stage.setScene(scene);
-
+        scene.getStylesheets().add(
+                getClass().getResource("/dk/easv/privatemoviecollection/gui/css.css").toExternalForm()
+        );
         stage.setOnShown(event -> {
             try {
                 controller.runStartupChecks();
@@ -46,11 +48,11 @@ public class HelloApplication extends Application {
                 e.printStackTrace();
             }
         });
-
         stage.show();
-        scene.getStylesheets().add(
-                getClass().getResource("/dk/easv/privatemoviecollection/gui/css.css").toExternalForm()
-        );
+
+
+
+
 
     }
 }
