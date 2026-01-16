@@ -44,6 +44,19 @@ public class MovieManager {
     }
 
     public void updateMovie(Movie movie)  {
+        if (movie.getTitle() == null || movie.getTitle().length()== 0) {
+            throw new IllegalArgumentException("Title cannot be empty");
+        }
+        if (movie.getImdbRating() < 0 || movie.getImdbRating() > 10) {
+            throw new IllegalArgumentException("IMDB rating must be between 0 and 10");
+        }
+        if (movie.getMyRating() < 0 || movie.getMyRating() > 10) {
+            throw new IllegalArgumentException("My rating must be between 0 and 10");
+        }
+        if (!isFormatCorrect(movie.getFileLink())) {
+            throw new IllegalArgumentException("Invalid file path");
+        }
+
         try{
             movieDao.updateMovie(movie);
         }catch (SQLException e) {

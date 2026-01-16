@@ -157,12 +157,15 @@ public class AddEditMovieController  {
                         lstChosenCategories.getItems()
 
                 );
-                Stage stage = (Stage) txtTitle.getScene().getWindow();
-                stage.close();
+
             }
         }
         catch (IllegalArgumentException | MovieException | CategoryException e)
-            { AlertHelper.showAlert(e.getMessage()); }
+            { AlertHelper.showAlert(e.getMessage());
+            return;}
+
+        Stage stage = (Stage) txtTitle.getScene().getWindow();
+        stage.close();
 
         mainScreenController.loadMovies();
 
