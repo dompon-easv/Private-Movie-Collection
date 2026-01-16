@@ -6,19 +6,34 @@ import javafx.scene.control.ButtonType;
 import java.util.Optional;
 
 public class AlertHelper {
+
+    private static void applyCss(Alert alert) {
+        alert.getDialogPane().getStylesheets().add(
+                AlertHelper.class
+                        .getResource("/dk/easv/privatemoviecollection/gui/css.css")
+                        .toExternalForm()
+        );
+    }
+
     public static void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Alert");
         alert.setHeaderText(null);
         alert.setContentText(message);
+
+        applyCss(alert);
+
         alert.showAndWait();
     }
 
-    public static Optional<ButtonType> showConfirmation(String message){
+    public static Optional<ButtonType> showConfirmation(String message) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Delete");
         alert.setHeaderText("Are you sure you want to delete it?");
         alert.setContentText(message);
+
+        applyCss(alert);
+
         return alert.showAndWait();
     }
 }
