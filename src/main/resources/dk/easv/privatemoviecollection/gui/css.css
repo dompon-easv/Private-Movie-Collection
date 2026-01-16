@@ -124,12 +124,12 @@
 
 .list-cell:hover {
     -fx-background-color: #2A303A;
-    -fx-text-fill: #e4dada;
+    -fx-text-fill: #225d8f;
 }
 
 .list-cell:selected {
     -fx-background-color: #343A45;
-    -fx-text-fill: #e4dada;
+    -fx-text-fill: #958a64;
 }
 
 .choice-box {
