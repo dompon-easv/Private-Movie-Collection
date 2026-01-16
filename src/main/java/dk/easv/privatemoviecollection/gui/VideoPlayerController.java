@@ -15,18 +15,10 @@ import java.io.File;
 
 public class VideoPlayerController {
 
-
-    @FXML
-    private MediaView mediaView;
-
-    @FXML
-    private MediaPlayer mediaPlayer;
-
-    @FXML
-    private Button btnPlay;
-
-    @FXML
-    private Slider seekSlider;
+    @FXML private MediaView mediaView;
+    @FXML private MediaPlayer mediaPlayer;
+    @FXML private Button btnPlay;
+    @FXML private Slider seekSlider;
 
     public void play(String filePath) {
 
@@ -67,24 +59,21 @@ public class VideoPlayerController {
             seekSlider.setValue(newValue.toSeconds());
         });
 
-
          /* THIS PART WAS SUPPOSED TO REWIND THE VIDEO WITH A SLIDER BUT IT DOESNT WORK
 
-seekSlider.valueChangingProperty().addListener((obs, wasChanging, isChanging) -> {
-      if (!isChanging) { // released the button
+        seekSlider.valueChangingProperty().addListener((obs, wasChanging, isChanging) -> {
+        if (!isChanging) { // released the button
           if (mediaPlayer.getStatus() == MediaPlayer.Status.STOPPED)
           {mediaPlayer.play();
               mediaPlayer.pause();
+        }
+            mediaPlayer.seek(Duration.seconds(seekSlider.getValue()));
+        }
+        }); */
 
-      }
-          mediaPlayer.seek(Duration.seconds(seekSlider.getValue()));
-  }
-
-  }); */
-
-            mediaPlayer.setOnEndOfMedia(() -> {
-                btnPlay.setText("Play");
-                mediaPlayer.stop();
+        mediaPlayer.setOnEndOfMedia(() -> {
+            btnPlay.setText("Play");
+            mediaPlayer.stop();
         });
         mediaPlayer.play();
     }

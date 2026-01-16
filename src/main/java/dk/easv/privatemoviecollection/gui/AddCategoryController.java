@@ -39,6 +39,7 @@ public class AddCategoryController {
             }
         }
     }
+
     @FXML
     public void onClickCancel(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
