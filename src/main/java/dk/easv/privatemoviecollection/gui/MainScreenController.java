@@ -146,6 +146,7 @@ public class MainScreenController implements Initializable {
 
         if (selectedMovie == null) {
             AlertHelper.showAlert("Please select a movie");
+            return;
         }
 
         Stage stage = new Stage();
@@ -157,6 +158,7 @@ public class MainScreenController implements Initializable {
 
         // EDIT MODE
         controller.initEdit(categoryManager, movieManager, this, selectedMovie);
+
 
         stage.setTitle("Edit Movie");
         stage.setScene(scene);
