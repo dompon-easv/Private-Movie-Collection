@@ -42,17 +42,13 @@ public class MainScreenController implements Initializable {
 
     private ObservableList<Category> categoryObservableList;
     private ObservableList<Movie> movieObservableList;
-
     private FilteredList<Category> filteredCategories;
     private FilteredList<Movie> filteredMovies;
-
     private SortedList<Movie> sortedMovies;
     private SortedList<Category> sortedCategories;
-
     private CategoryManager categoryManager;
     private MovieManager movieManager;
     private FilterManager filterManager;
-
 
     public void init(CategoryManager categoryManager, MovieManager movieManager, FilterManager filterManager) {
         this.categoryManager = categoryManager;
@@ -76,9 +72,7 @@ public class MainScreenController implements Initializable {
         // 3. populating the tables with the sorted lists
         tblCategories.setItems(sortedCategories);
         tblMovies.setItems(sortedMovies);
-        }
-
-
+    }
 
     public void onClickNewCategory(ActionEvent event) throws IOException {
         Stage stage = new Stage();
@@ -124,7 +118,6 @@ public class MainScreenController implements Initializable {
         scene.getStylesheets().add(
                 getClass().getResource("/dk/easv/privatemoviecollection/gui/css.css").toExternalForm()
         );
-
     }
 
     public void onClickDeleteMovie(ActionEvent event) {
@@ -138,7 +131,6 @@ public class MainScreenController implements Initializable {
             }
         } else AlertHelper.showAlert("Please select a movie");
     }
-
 
     public void onClickEditMovie(ActionEvent event) throws IOException {
 
@@ -166,9 +158,7 @@ public class MainScreenController implements Initializable {
         scene.getStylesheets().add(
                 getClass().getResource("/dk/easv/privatemoviecollection/gui/css.css").toExternalForm()
         );
-
     }
-
 
     public void loadCategories() {
         try {
@@ -177,7 +167,6 @@ public class MainScreenController implements Initializable {
             AlertHelper.showAlert(e.getMessage());
         }
     }
-
 
     public void loadMovies() {
         try {
@@ -219,7 +208,6 @@ public class MainScreenController implements Initializable {
         txtFilter.textProperty().addListener((observable, oldValue, newValue) -> filterAll());
         ratingDropdown.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> filterAll());
     }
-
 
     public void onClickOpenInApp(ActionEvent actionEvent) {
         Movie selectedMovie = tblMovies.getSelectionModel().getSelectedItem();
@@ -316,17 +304,12 @@ public class MainScreenController implements Initializable {
         } catch (RuntimeException e) {
             AlertHelper.showAlert("Could not update last view date");
         }
+    }
 
-    }   public void filterAll() {
-
+    public void filterAll() {
         String filterText = txtFilter.getText();
         Integer rating = ratingDropdown.getValue();
         filterManager.filterLists(filterText, filteredCategories, filteredMovies);
         filterManager.filterByRating(rating, filteredMovies);
-
     }
-
 }
-
-
-

@@ -32,7 +32,6 @@ public class AddEditMovieController  {
     private Movie movie;
     private MovieAddEditMode mode;
 
-
     private MovieManager movieManager;
     private CategoryManager categoryManager;
     private MainScreenController mainScreenController;
@@ -48,6 +47,7 @@ public class AddEditMovieController  {
         loadCategories();
         setupCategoryDoubleClick();
     }
+
     //it updates
     public void initEdit(CategoryManager categoryManager, MovieManager movieManager, MainScreenController mainScreenController,
                          Movie movie) {
@@ -65,7 +65,6 @@ public class AddEditMovieController  {
         }
         setupCategoryDoubleClick();
     }
-
 
     private void setupCategoryDoubleClick() {
 
@@ -94,16 +93,12 @@ public class AddEditMovieController  {
         });
     }
 
-
-
     public void onClickCancel(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.close();
     }
 
     public void onClickSave(ActionEvent event) {
-
-
         String title = txtTitle.getText();
         String imdbText = txtIMDBRating.getText();
         String myRatingText = txtMyRating.getText();
@@ -177,9 +172,6 @@ public class AddEditMovieController  {
         lstChosenCategories.getItems().clear();
     }
 
-
-
-
     public void onClickBrowse(ActionEvent event) {
         FileChooser fc = new FileChooser();
         fc.setTitle("Choose a file");
@@ -210,9 +202,7 @@ public class AddEditMovieController  {
     public void loadCategories() {
         lstAllCategories.getItems().clear();
         lstAllCategories.getItems().setAll(categoryManager.getCategories());
-
     }
-
 
     private void populateFields()  {
         txtTitle.setText(movie.getTitle());
@@ -225,9 +215,4 @@ public class AddEditMovieController  {
         lstChosenCategories.getItems().setAll(movieCategories);
         lstAllCategories.getItems().removeAll(movieCategories);
     }
-
-
-
-
-
 }

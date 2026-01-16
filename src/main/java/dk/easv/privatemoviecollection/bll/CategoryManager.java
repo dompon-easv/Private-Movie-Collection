@@ -33,6 +33,7 @@ public class CategoryManager {
             throw new CategoryException("Could not add category", e);
         }
     }
+
     public void deleteCategory(int id) {
         try{
             categoryDao.deleteCategory(id);
@@ -51,6 +52,7 @@ public class CategoryManager {
             throw new CategoryException("Cannot update categories in movie",e);
         }
     }
+
     public List<Category> getCategories() {
         try {
             return categoryDao.getAllCategories();
@@ -58,7 +60,6 @@ public class CategoryManager {
             throw new CategoryException("Could not get categories", e);
         }
     }
-
 
     public void addMovieToCategory(int movieId, int categoryId){
         try{
