@@ -1,4 +1,4 @@
-package dk.easv.privatemoviecollection.model;
+package dk.easv.privatemoviecollection.be;
 
 public class Category {
     private String name;

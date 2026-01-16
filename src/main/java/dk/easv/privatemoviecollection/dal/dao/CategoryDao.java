@@ -2,8 +2,8 @@ package dk.easv.privatemoviecollection.dal.dao;
 
 import dk.easv.privatemoviecollection.dal.ConnectionManager;
 import dk.easv.privatemoviecollection.dal.daoInterface.ICategoryDao;
-import dk.easv.privatemoviecollection.model.Category;
-import dk.easv.privatemoviecollection.model.Movie;
+import dk.easv.privatemoviecollection.be.Category;
+import dk.easv.privatemoviecollection.be.Movie;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import java.sql.*;

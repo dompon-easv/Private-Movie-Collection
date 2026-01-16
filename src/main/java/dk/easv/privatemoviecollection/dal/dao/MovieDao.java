@@ -2,7 +2,7 @@ package dk.easv.privatemoviecollection.dal.dao;
 
 import dk.easv.privatemoviecollection.dal.ConnectionManager;
 import dk.easv.privatemoviecollection.dal.daoInterface.IMovieDao;
-import dk.easv.privatemoviecollection.model.Movie;
+import dk.easv.privatemoviecollection.be.Movie;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

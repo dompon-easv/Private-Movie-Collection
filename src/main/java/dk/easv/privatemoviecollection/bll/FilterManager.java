@@ -1,7 +1,7 @@
 package dk.easv.privatemoviecollection.bll;
 
-import dk.easv.privatemoviecollection.model.Category;
-import dk.easv.privatemoviecollection.model.Movie;
+import dk.easv.privatemoviecollection.be.Category;
+import dk.easv.privatemoviecollection.be.Movie;
 import javafx.collections.transformation.FilteredList;
 
 public class FilterManager {

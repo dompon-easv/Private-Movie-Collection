@@ -2,7 +2,7 @@ package dk.easv.privatemoviecollection.bll;
 
 import dk.easv.privatemoviecollection.bll.exceptions.MovieException;
 import dk.easv.privatemoviecollection.dal.daoInterface.IMovieDao;
-import dk.easv.privatemoviecollection.model.Movie;
+import dk.easv.privatemoviecollection.be.Movie;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.List;
@@ -76,7 +76,6 @@ public class MovieManager {
     }
 
     public boolean shouldWarnAboutOldAndLowRatedMovies() {
-        System.out.println("Trying to warn about old and low rated movies");
         try {
             return movieDao.isOldAndHasLowRating();
         } catch (SQLException e) {
