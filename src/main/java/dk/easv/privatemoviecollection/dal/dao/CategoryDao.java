@@ -40,7 +40,7 @@ public class CategoryDao implements ICategoryDao {
         ResultSet rs = stmt.executeQuery())
         {
             while (rs.next()) {
-                categories.add(new Category(rs.getString("name"), rs.getInt("id")));
+                categories.add(new Category(rs.getInt("id"), rs.getString("name")));
             }
         } return  categories;
     }
