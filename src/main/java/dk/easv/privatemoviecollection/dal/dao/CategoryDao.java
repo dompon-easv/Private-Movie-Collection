@@ -19,6 +19,7 @@ public class CategoryDao implements ICategoryDao {
     public CategoryDao(ConnectionManager db) throws SQLException {
         this.db = db;
     }
+
     @Override
     public void addCategory(Category category) throws SQLException {
         String sql = "INSERT INTO category (name) VALUES (?)";
@@ -29,20 +30,6 @@ public class CategoryDao implements ICategoryDao {
             stmt.setString(1, category.getName());
             stmt.executeUpdate();
         }
-    }
-
-    public List<Category> getAllCategories() throws SQLException {
-        ObservableList<Category> categories = FXCollections.observableArrayList();
-        String sql = "SELECT id, name FROM category";
-
-        try (Connection con = db.getConnection();
-        PreparedStatement stmt = con.prepareStatement(sql);
-        ResultSet rs = stmt.executeQuery())
-        {
-            while (rs.next()) {
-                categories.add(new Category(rs.getString("name"), rs.getInt("id")));
-            }
-        } return  categories;
     }
 
     public void deleteCategory(int id) throws SQLException {
@@ -56,6 +43,44 @@ public class CategoryDao implements ICategoryDao {
             stmt2.executeUpdate();
             stmt.executeUpdate();
         }
+    }
+
+    public void updateCategoriesForMovie(int movieId, List<Integer> categoryIds) throws SQLException {
+
+        // Step 1: Delete existing category associations
+        String deleteSql = "DELETE FROM CatMovie WHERE MovieId = ?";
+        try (Connection con = db.getConnection();
+             PreparedStatement deleteStmt = con.prepareStatement(deleteSql)) {
+            deleteStmt.setInt(1, movieId);
+            deleteStmt.executeUpdate();
+        }
+
+        // Step 2: Insert new associations
+        String insertSql = "INSERT INTO CatMovie (MovieId, CategoryId) VALUES (?, ?)";
+        try (Connection con = db.getConnection();
+             PreparedStatement insertStmt = con.prepareStatement(insertSql)) {
+
+            for (Integer categoryId : categoryIds) {
+                insertStmt.setInt(1, movieId);
+                insertStmt.setInt(2, categoryId);
+                insertStmt.addBatch();
+            }
+            insertStmt.executeBatch();
+        }
+    }
+
+    public List<Category> getAllCategories() throws SQLException {
+        ObservableList<Category> categories = FXCollections.observableArrayList();
+        String sql = "SELECT id, name FROM category";
+
+        try (Connection con = db.getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery())
+        {
+            while (rs.next()) {
+                categories.add(new Category(rs.getString("name"), rs.getInt("id")));
+            }
+        } return  categories;
     }
 
     public void addMovieToCategory(int movieId, int categoryId) throws SQLException {
@@ -123,30 +148,5 @@ public class CategoryDao implements ICategoryDao {
             }
         }
         return categories;
-    }
-// trying to delete categories from movie so that we can /edit/update ,PD trine rules
-
-    public void updateCategoriesForMovie(int movieId, List<Integer> categoryIds) throws SQLException {
-
-        // Step 1: Delete existing category associations
-        String deleteSql = "DELETE FROM CatMovie WHERE MovieId = ?";
-        try (Connection con = db.getConnection();
-             PreparedStatement deleteStmt = con.prepareStatement(deleteSql)) {
-            deleteStmt.setInt(1, movieId);
-            deleteStmt.executeUpdate();
-        }
-
-        // Step 2: Insert new associations
-        String insertSql = "INSERT INTO CatMovie (MovieId, CategoryId) VALUES (?, ?)";
-        try (Connection con = db.getConnection();
-             PreparedStatement insertStmt = con.prepareStatement(insertSql)) {
-
-            for (Integer categoryId : categoryIds) {
-                insertStmt.setInt(1, movieId);
-                insertStmt.setInt(2, categoryId);
-                insertStmt.addBatch();
-            }
-            insertStmt.executeBatch();
-        }
     }
 }
