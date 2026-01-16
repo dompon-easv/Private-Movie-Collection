@@ -7,8 +7,6 @@ public class Category {
     public Category(String name)
     { this.name = name; }
 
-    public String getName() { return name; }
-
     public Category (String name, int id)
     { this.name = name;
         this.id = id; }
@@ -18,6 +16,7 @@ public class Category {
         this.name = name;
     }
 
+    public String getName() { return name; }
     public int getId() { return id; }
 
     @Override
