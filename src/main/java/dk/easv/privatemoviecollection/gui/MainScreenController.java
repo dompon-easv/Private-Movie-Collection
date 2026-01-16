@@ -42,13 +42,10 @@ public class MainScreenController implements Initializable {
 
     private ObservableList<Category> categoryObservableList;
     private ObservableList<Movie> movieObservableList;
-
     private FilteredList<Category> filteredCategories;
     private FilteredList<Movie> filteredMovies;
-
     private SortedList<Movie> sortedMovies;
     private SortedList<Category> sortedCategories;
-
     private CategoryManager categoryManager;
     private MovieManager movieManager;
     private FilterManager filterManager;

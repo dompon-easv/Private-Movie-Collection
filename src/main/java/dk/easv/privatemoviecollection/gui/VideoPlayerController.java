@@ -10,7 +10,6 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-
 import java.io.File;
 
 public class VideoPlayerController {
