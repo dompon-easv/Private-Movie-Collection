@@ -23,6 +23,7 @@ public class Category {
     public String toString() {
         return name;
     }
+
     /* Avoid duplicates in categories while adding movie,
     if id match they represent the same category */
     @Override

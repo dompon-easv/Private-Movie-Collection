@@ -19,6 +19,7 @@ public class CategoryDao implements ICategoryDao {
     public CategoryDao(ConnectionManager db) throws SQLException {
         this.db = db;
     }
+
     @Override
     public void addCategory(Category category) throws SQLException {
         String sql = "INSERT INTO category (name) VALUES (?)";

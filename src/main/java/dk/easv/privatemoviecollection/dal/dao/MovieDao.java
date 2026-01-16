@@ -16,27 +16,6 @@ public class MovieDao implements IMovieDao {
     }
 
     @Override
-    public boolean isOldAndHasLowRating() throws SQLException {
-        String sql = """
-                SELECT COUNT(*)
-                FROM movie
-                WHERE myrating <= 6
-                AND (lastview IS NULL 
-                    OR lastview < DATEADD(YEAR, -2, GETDATE()))
-                """;
-
-        try (Connection con = db.getConnection();
-            PreparedStatement stmt = con.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery()) {
-
-            if (rs.next()) {
-                return rs.getInt(1) > 0;
-            }
-            return false;
-        }
-    }
-
-    @Override
     public void addMovie(Movie movie) throws SQLException {
         String sql = "INSERT INTO movie (title, imdbrating, myrating, filelink) VALUES (?, ?, ?, ?)";
 
@@ -54,28 +33,6 @@ public class MovieDao implements IMovieDao {
             }
         }
     }
-
-    @Override
-    public List<Movie> getAllMovies() throws SQLException {
-        List<Movie> movies = new ArrayList<>(); String sql = """
-        SELECT id, title, imdbrating, myrating, filelink
-        FROM movie """;
-        try (Connection con = db.getConnection();
-             PreparedStatement stmt = con.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                Movie movie = new Movie(
-                        rs.getInt("id"),
-                        rs.getString("title"),
-                        rs.getDouble("imdbrating"),
-                        rs.getDouble("myrating"),
-                        rs.getString("filelink") ); movies.add(movie);}
-        }
-            return movies;
-    }
-
-
 
     @Override
             public void updateMovie(Movie movie) throws SQLException {
@@ -112,12 +69,53 @@ public class MovieDao implements IMovieDao {
         }
     }
 
+    @Override
+    public List<Movie> getAllMovies() throws SQLException {
+        List<Movie> movies = new ArrayList<>(); String sql = """
+        SELECT id, title, imdbrating, myrating, filelink
+        FROM movie """;
+        try (Connection con = db.getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Movie movie = new Movie(
+                        rs.getInt("id"),
+                        rs.getString("title"),
+                        rs.getDouble("imdbrating"),
+                        rs.getDouble("myrating"),
+                        rs.getString("filelink") ); movies.add(movie);}
+        }
+        return movies;
+    }
+
     public void updateLastView(int movieId) throws SQLException {
         String sql = "UPDATE movie SET lastview = GETDATE() WHERE id = ?";
         try(Connection con = ConnectionManager.getConnection();
         PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setInt(1, movieId);
             stmt.executeUpdate();
+        }
+    }
+
+    @Override
+    public boolean isOldAndHasLowRating() throws SQLException {
+        String sql = """
+                SELECT COUNT(*)
+                FROM movie
+                WHERE myrating <= 6
+                AND (lastview IS NULL 
+                    OR lastview < DATEADD(YEAR, -2, GETDATE()))
+                """;
+
+        try (Connection con = db.getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+            return false;
         }
     }
 
