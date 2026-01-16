@@ -33,7 +33,24 @@ public class CategoryManager {
             throw new CategoryException("Could not add category", e);
         }
     }
+    public void deleteCategory(int id) {
+        try{
+            categoryDao.deleteCategory(id);
+        }catch (SQLException e){
+            throw new CategoryException(e.getMessage());
+        }
+    }
 
+    public void updateMovieCategories(int movieId, List<Category> categories) {
+        List<Integer> categoryIds = categories.stream()
+                .map(Category::getId)
+                .toList();
+        try {
+            categoryDao.updateCategoriesForMovie(movieId, categoryIds);
+        }catch (SQLException e) {
+            throw new CategoryException("Cannot update categories in movie",e);
+        }
+    }
     public List<Category> getCategories() {
         try {
             return categoryDao.getAllCategories();
@@ -42,13 +59,6 @@ public class CategoryManager {
         }
     }
 
-   public void deleteCategory(int id) {
-        try{
-            categoryDao.deleteCategory(id);
-        }catch (SQLException e){
-            throw new CategoryException(e.getMessage());
-        }
-   }
 
     public void addMovieToCategory(int movieId, int categoryId){
         try{
@@ -71,17 +81,6 @@ public class CategoryManager {
             return categoryDao.getCategoriesForMovie(movieId);
         }catch (SQLException e) {
             throw new CategoryException("Failed to get all movies for category",e);
-        }
-    }
-
-    public void updateMovieCategories(int movieId, List<Category> categories) {
-        List<Integer> categoryIds = categories.stream()
-                .map(Category::getId)
-                .toList();
-        try {
-            categoryDao.updateCategoriesForMovie(movieId, categoryIds);
-        }catch (SQLException e) {
-            throw new CategoryException("Cannot update categories in movie",e);
         }
     }
 }

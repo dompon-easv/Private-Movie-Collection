@@ -42,15 +42,12 @@ public class MovieManager {
 
         return movie;
     }
-
-
-    public List<Movie> getAllMovies() {
-        try {
-            return movieDao.getAllMovies();
-        } catch (SQLException e) {
-            throw new MovieException("Failed to get all movies", e);
+    public void updateMovie(Movie movie)  {
+        try{
+            movieDao.updateMovie(movie);
+        }catch (SQLException e) {
+            throw new MovieException("Failed to update movie", e);
         }
-
     }
 
     public void deleteMovie(int id) {
@@ -60,24 +57,13 @@ public class MovieManager {
             throw new MovieException("Failed to delete movie", e);
         }
     }
-
-    public boolean canOpenMovie(String filePath) {
-        return filePath != null && new File(filePath).exists();
-    }
-
-    public boolean isFormatCorrect(String filePath) {
-        return filePath.endsWith(".mp4") || filePath.endsWith(".mpeg4");
-    }
-
-    public void updateMovie(Movie movie)  {
-        try{
-            movieDao.updateMovie(movie);
-        }catch (SQLException e) {
-            throw new MovieException("Failed to update movie", e);
+    public List<Movie> getAllMovies() {
+        try {
+            return movieDao.getAllMovies();
+        } catch (SQLException e) {
+            throw new MovieException("Failed to get all movies", e);
         }
     }
-
-
     public void updateLastView(int movieId) {
         try {
             movieDao.updateLastView(movieId);
@@ -95,12 +81,19 @@ public class MovieManager {
         }
     }
 
-    public boolean filePathExists(String filePath) {
-        try {
+    public boolean filePathExists(String filePath) { //it is one of 2 options how not to add file with the same path
+        try {                                        // but it was handled in DB by adding UNIQUE constraint to file
             return movieDao.filePathExists(filePath);
         } catch (SQLException e) {
             throw new MovieException("Failed to check if file exists", e);
         }
+    }
+    public boolean canOpenMovie(String filePath) {
+        return filePath != null && new File(filePath).exists();
+    }
+
+    public boolean isFormatCorrect(String filePath) {
+        return filePath.endsWith(".mp4") || filePath.endsWith(".mpeg4");
     }
 }
 
