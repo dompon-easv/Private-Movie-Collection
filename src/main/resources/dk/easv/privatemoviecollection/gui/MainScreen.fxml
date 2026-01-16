@@ -112,7 +112,7 @@
                                            layoutX="14.0"
                                            layoutY="8.0"
                                            prefWidth="156.0"
-                                           promptText="Filter movies"/>
+                                           promptText="Filter movies/categories"/>
 
                                 <Button layoutX="14.0"
                                         layoutY="67.0"
