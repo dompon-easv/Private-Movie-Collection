@@ -155,7 +155,10 @@ public class AddEditMovieController  {
                 categoryManager.updateMovieCategories(
                         movie.getId(),
                         lstChosenCategories.getItems()
+
                 );
+                Stage stage = (Stage) txtTitle.getScene().getWindow();
+                stage.close();
             }
         }
         catch (IllegalArgumentException | MovieException | CategoryException e)
@@ -170,6 +173,7 @@ public class AddEditMovieController  {
         txtMyRating.clear();
         lstAllCategories.getSelectionModel().clearSelection();
         lstChosenCategories.getItems().clear();
+
     }
 
     public void onClickBrowse(ActionEvent event) {
