@@ -26,22 +26,17 @@ Movie {
     public String getTitle() {
         return title;
     }
-
     public void setTitle(String title) { this.title = title; }
 
     public double getImdbRating() { return imdbRating; }
-
     public void setImdbRating(double imdbRating) { this.imdbRating = imdbRating; }
 
     public double getMyRating() { return myRating; }
-
     public void setMyRating(double myRating) { this.myRating = myRating; }
 
-    public String getFileLink() { return fileLink; }
-
     public int getId() { return id; }
+    public void setId(int id) {this.id = id;} //used only for creating movies in MovieDAO
 
-    public void setId(int id) {this.id = id;}
-
+    public String getFileLink() { return fileLink; }
     public void setFileLink(String fileLink) {this.fileLink = fileLink;}
 }
