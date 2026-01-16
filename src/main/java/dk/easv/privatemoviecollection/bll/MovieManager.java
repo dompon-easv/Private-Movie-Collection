@@ -42,6 +42,7 @@ public class MovieManager {
 
         return movie;
     }
+
     public void updateMovie(Movie movie)  {
         try{
             movieDao.updateMovie(movie);
@@ -57,6 +58,7 @@ public class MovieManager {
             throw new MovieException("Failed to delete movie", e);
         }
     }
+
     public List<Movie> getAllMovies() {
         try {
             return movieDao.getAllMovies();
@@ -64,6 +66,7 @@ public class MovieManager {
             throw new MovieException("Failed to get all movies", e);
         }
     }
+
     public void updateLastView(int movieId) {
         try {
             movieDao.updateLastView(movieId);
@@ -88,6 +91,7 @@ public class MovieManager {
             throw new MovieException("Failed to check if file exists", e);
         }
     }
+
     public boolean canOpenMovie(String filePath) {
         return filePath != null && new File(filePath).exists();
     }
