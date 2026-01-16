@@ -255,6 +255,7 @@ public class MainScreenController implements Initializable {
         try {
             txtFilter.clear();
             ratingDropdown.getSelectionModel().clearSelection();
+            tblCategories.getSelectionModel().clearSelection();
             loadMovies();
         } catch (RuntimeException e) {
             AlertHelper.showAlert(e.getMessage());

@@ -63,6 +63,7 @@ public class AddEditMovieController  {
                 if (selected != null) {
                     lstAllCategories.getItems().remove(selected);
                     lstChosenCategories.getItems().add(selected);}
+                    lstAllCategories.getSelectionModel().clearSelection();
             }
         });
 
@@ -73,6 +74,8 @@ public class AddEditMovieController  {
                 if (selected != null) {
                     lstChosenCategories.getItems().remove(selected);
                     lstAllCategories.getItems().add(selected);
+                    lstChosenCategories.getSelectionModel().clearSelection();
+
                 }
             }
         });
