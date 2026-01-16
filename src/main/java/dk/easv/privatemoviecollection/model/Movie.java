@@ -35,7 +35,7 @@ Movie {
     public void setMyRating(double myRating) { this.myRating = myRating; }
 
     public int getId() { return id; }
-    public void setId(int id) {this.id = id;} //used only for creating movies in DAO
+    public void setId(int id) {this.id = id;} //used only for creating movies in MovieDAO
 
     public String getFileLink() { return fileLink; }
     public void setFileLink(String fileLink) {this.fileLink = fileLink;}
