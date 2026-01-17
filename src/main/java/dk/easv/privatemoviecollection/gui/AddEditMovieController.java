@@ -51,7 +51,6 @@ public class AddEditMovieController  {
     //it updates
     public void initEdit(CategoryManager categoryManager, MovieManager movieManager, MainScreenController mainScreenController,
                          Movie movie) {
-
         this.categoryManager = categoryManager;
         this.movieManager = movieManager;
         this.mainScreenController = mainScreenController;
@@ -212,14 +211,18 @@ public class AddEditMovieController  {
     }
 
     private void populateFields()  {
-        txtTitle.setText(movie.getTitle());
-        txtIMDBRating.setText(String.valueOf(movie.getImdbRating()));
-        txtMyRating.setText(String.valueOf(movie.getMyRating()));
-        lblFilePath.setText(movie.getFileLink());
+        try {
+            txtTitle.setText(movie.getTitle());
+            txtIMDBRating.setText(String.valueOf(movie.getImdbRating()));
+            txtMyRating.setText(String.valueOf(movie.getMyRating()));
+            lblFilePath.setText(movie.getFileLink());
 
             List<Category> movieCategories =
                     categoryManager.getCategoriesForMovie(movie.getId());
-        lstChosenCategories.getItems().setAll(movieCategories);
-        lstAllCategories.getItems().removeAll(movieCategories);
+            lstChosenCategories.getItems().setAll(movieCategories);
+            lstAllCategories.getItems().removeAll(movieCategories);
+        }catch (IllegalArgumentException e) {
+            AlertHelper.showAlert(e.getMessage());
+        }
     }
 }

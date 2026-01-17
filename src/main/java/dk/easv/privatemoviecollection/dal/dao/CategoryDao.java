@@ -13,9 +13,9 @@ import java.util.List;
 public class CategoryDao implements ICategoryDao {
 
     private ConnectionManager db;
-    private Connection connection;
 
-    public CategoryDao(ConnectionManager db) throws SQLException {
+
+    public CategoryDao(ConnectionManager db) {
         this.db = db;
     }
 

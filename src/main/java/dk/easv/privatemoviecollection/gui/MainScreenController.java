@@ -74,7 +74,7 @@ public class MainScreenController implements Initializable {
         tblMovies.setItems(sortedMovies);
     }
 
-    public void onClickNewCategory(ActionEvent event) throws IOException {
+    public void onClickNewCategory(ActionEvent event) throws IOException {      //there might be catch/try for IOException
         Stage stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/dk/easv/privatemoviecollection/gui/AddCategory.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
@@ -132,12 +132,13 @@ public class MainScreenController implements Initializable {
         } else AlertHelper.showAlert("Please select a movie");
     }
 
-    public void onClickEditMovie(ActionEvent event) throws IOException {
+    public void onClickEditMovie(ActionEvent event) throws IOException {        //there might be catch/try for IOException
 
         Movie selectedMovie = getSelectedMovie();
 
         if (selectedMovie == null) {
             AlertHelper.showAlert("Please select a movie");
+            return;
         }
 
         Stage stage = new Stage();
@@ -148,8 +149,11 @@ public class MainScreenController implements Initializable {
         AddEditMovieController controller = fxmlLoader.getController();
 
         // EDIT MODE
-        controller.initEdit(categoryManager, movieManager, this, selectedMovie);
-
+        try {
+            controller.initEdit(categoryManager, movieManager, this, selectedMovie);
+        } catch (MovieException e) {
+            AlertHelper.showAlert(e.getMessage());
+        }
         stage.setTitle("Edit Movie");
         stage.setScene(scene);
         stage.show();
@@ -225,7 +229,7 @@ public class MainScreenController implements Initializable {
             Desktop.getDesktop().open(new File(selectedMovie.getFileLink()));
         } catch (IOException e) {
             AlertHelper.showAlert("Could not open the movie");
-        } catch (RuntimeException e) {
+        } catch (MovieException e) {
             AlertHelper.showAlert("Could not update last view date");
         }
     }
@@ -233,7 +237,7 @@ public class MainScreenController implements Initializable {
     private void loadMoviesForCategory(int categoryId) {
         try {
             movieObservableList.setAll(categoryManager.getAllMoviesForCategory(categoryId));
-        } catch (RuntimeException e) {
+        } catch (MovieException e) {
             AlertHelper.showAlert("Could not load movies for the selected category");
         }
     }
@@ -244,7 +248,7 @@ public class MainScreenController implements Initializable {
             ratingDropdown.getSelectionModel().clearSelection();
             tblCategories.getSelectionModel().clearSelection();
             loadMovies();
-        } catch (RuntimeException e) {
+        } catch (MovieException e) {
             AlertHelper.showAlert(e.getMessage());
         }
     }
@@ -257,11 +261,10 @@ public class MainScreenController implements Initializable {
             }
         } catch (MovieException e) {
             AlertHelper.showAlert("Could not run startup checks");
-            e.printStackTrace();
         }
     }
 
-    public void onClickPlay(ActionEvent event) throws IOException {
+    public void onClickPlay(ActionEvent event) throws IOException {     //there might be catch/try for IOException
         Movie selectedMovie = tblMovies.getSelectionModel().getSelectedItem();
 
         if (selectedMovie == null) {
@@ -299,7 +302,7 @@ public class MainScreenController implements Initializable {
         try {
             movieManager.updateLastView(selectedMovie.getId());
 
-        } catch (RuntimeException e) {
+        } catch (MovieException e) {
             AlertHelper.showAlert("Could not update last view date");
         }
     }
