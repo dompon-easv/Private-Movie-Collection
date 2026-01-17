@@ -7,8 +7,8 @@ import dk.easv.privatemoviecollection.bll.MovieManager;
 import dk.easv.privatemoviecollection.bll.exceptions.CategoryException;
 import dk.easv.privatemoviecollection.bll.exceptions.MovieException;
 import dk.easv.privatemoviecollection.gui.helpers.AlertHelper;
-import dk.easv.privatemoviecollection.model.Category;
-import dk.easv.privatemoviecollection.model.Movie;
+import dk.easv.privatemoviecollection.be.Category;
+import dk.easv.privatemoviecollection.be.Movie;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -138,7 +138,6 @@ public class MainScreenController implements Initializable {
 
         if (selectedMovie == null) {
             AlertHelper.showAlert("Please select a movie");
-            return;
         }
 
         Stage stage = new Stage();
@@ -149,9 +148,11 @@ public class MainScreenController implements Initializable {
         AddEditMovieController controller = fxmlLoader.getController();
 
         // EDIT MODE
-        controller.initEdit(categoryManager, movieManager, this, selectedMovie);
-
-
+        try {
+            controller.initEdit(categoryManager, movieManager, this, selectedMovie);
+        } catch (MovieException e) {
+            AlertHelper.showAlert(e.getMessage());
+        }
         stage.setTitle("Edit Movie");
         stage.setScene(scene);
         stage.show();

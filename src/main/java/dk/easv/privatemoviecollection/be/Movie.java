@@ -1,4 +1,4 @@
-package dk.easv.privatemoviecollection.model;
+package dk.easv.privatemoviecollection.be;
 
 public class Movie {
     private int id;

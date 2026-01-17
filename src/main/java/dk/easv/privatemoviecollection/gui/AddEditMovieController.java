@@ -5,8 +5,8 @@ import dk.easv.privatemoviecollection.bll.MovieManager;
 import dk.easv.privatemoviecollection.bll.exceptions.CategoryException;
 import dk.easv.privatemoviecollection.bll.exceptions.MovieException;
 import dk.easv.privatemoviecollection.gui.helpers.AlertHelper;
-import dk.easv.privatemoviecollection.model.Category;
-import dk.easv.privatemoviecollection.model.Movie;
+import dk.easv.privatemoviecollection.be.Category;
+import dk.easv.privatemoviecollection.be.Movie;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -51,7 +51,6 @@ public class AddEditMovieController  {
     //it updates
     public void initEdit(CategoryManager categoryManager, MovieManager movieManager, MainScreenController mainScreenController,
                          Movie movie) {
-
         this.categoryManager = categoryManager;
         this.movieManager = movieManager;
         this.mainScreenController = mainScreenController;
@@ -155,11 +154,17 @@ public class AddEditMovieController  {
                 categoryManager.updateMovieCategories(
                         movie.getId(),
                         lstChosenCategories.getItems()
+
                 );
+
             }
         }
         catch (IllegalArgumentException | MovieException | CategoryException e)
-            { AlertHelper.showAlert(e.getMessage()); }
+            { AlertHelper.showAlert(e.getMessage());
+            return;}
+
+        Stage stage = (Stage) txtTitle.getScene().getWindow();
+        stage.close();
 
         mainScreenController.loadMovies();
 
@@ -170,6 +175,7 @@ public class AddEditMovieController  {
         txtMyRating.clear();
         lstAllCategories.getSelectionModel().clearSelection();
         lstChosenCategories.getItems().clear();
+
     }
 
     public void onClickBrowse(ActionEvent event) {
@@ -205,14 +211,18 @@ public class AddEditMovieController  {
     }
 
     private void populateFields()  {
-        txtTitle.setText(movie.getTitle());
-        txtIMDBRating.setText(String.valueOf(movie.getImdbRating()));
-        txtMyRating.setText(String.valueOf(movie.getMyRating()));
-        lblFilePath.setText(movie.getFileLink());
+        try {
+            txtTitle.setText(movie.getTitle());
+            txtIMDBRating.setText(String.valueOf(movie.getImdbRating()));
+            txtMyRating.setText(String.valueOf(movie.getMyRating()));
+            lblFilePath.setText(movie.getFileLink());
 
             List<Category> movieCategories =
                     categoryManager.getCategoriesForMovie(movie.getId());
-        lstChosenCategories.getItems().setAll(movieCategories);
-        lstAllCategories.getItems().removeAll(movieCategories);
+            lstChosenCategories.getItems().setAll(movieCategories);
+            lstAllCategories.getItems().removeAll(movieCategories);
+        }catch (IllegalArgumentException e) {
+            AlertHelper.showAlert(e.getMessage());
+        }
     }
 }

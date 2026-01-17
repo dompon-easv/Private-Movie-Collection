@@ -2,7 +2,7 @@ package dk.easv.privatemoviecollection.bll;
 
 import dk.easv.privatemoviecollection.bll.exceptions.MovieException;
 import dk.easv.privatemoviecollection.dal.daoInterface.IMovieDao;
-import dk.easv.privatemoviecollection.model.Movie;
+import dk.easv.privatemoviecollection.be.Movie;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.List;
@@ -44,6 +44,19 @@ public class MovieManager {
     }
 
     public void updateMovie(Movie movie)  {
+        if (movie.getTitle() == null || movie.getTitle().length()== 0) {
+            throw new IllegalArgumentException("Title cannot be empty");
+        }
+        if (movie.getImdbRating() < 0 || movie.getImdbRating() > 10) {
+            throw new IllegalArgumentException("IMDB rating must be between 0 and 10");
+        }
+        if (movie.getMyRating() < 0 || movie.getMyRating() > 10) {
+            throw new IllegalArgumentException("My rating must be between 0 and 10");
+        }
+        if (!isFormatCorrect(movie.getFileLink())) {
+            throw new IllegalArgumentException("Invalid file path");
+        }
+
         try{
             movieDao.updateMovie(movie);
         }catch (SQLException e) {
@@ -76,7 +89,6 @@ public class MovieManager {
     }
 
     public boolean shouldWarnAboutOldAndLowRatedMovies() {
-        System.out.println("Trying to warn about old and low rated movies");
         try {
             return movieDao.isOldAndHasLowRating();
         } catch (SQLException e) {

@@ -2,8 +2,8 @@ package dk.easv.privatemoviecollection.bll;
 
 import dk.easv.privatemoviecollection.bll.exceptions.CategoryException;
 import dk.easv.privatemoviecollection.dal.daoInterface.ICategoryDao;
-import dk.easv.privatemoviecollection.model.Category;
-import dk.easv.privatemoviecollection.model.Movie;
+import dk.easv.privatemoviecollection.be.Category;
+import dk.easv.privatemoviecollection.be.Movie;
 import java.sql.SQLException;
 import java.util.List;
 
